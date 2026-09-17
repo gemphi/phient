@@ -2,7 +2,7 @@
 
 > _Enterprise React 19 Component Library & Data Engine modeled after **Palantir Blueprint** (`@blueprintjs/core`, `@blueprintjs/table`)._
 
-[![npm version](https://img.shields.io/badge/npm-puijs-red.svg)](https://www.npmjs.com/package/puijs)
+[![npm version](https://img.shields.io/badge/npm-@phiace/puijs-red.svg)](https://www.npmjs.com/package/@phiace/puijs)
 [![React](https://img.shields.io/badge/React-18%20%26%2019-blue.svg)](package.json)
 [![Architecture](https://img.shields.io/badge/Architecture-Palantir%20Blueprint-indigo.svg)](ARCHITECTURE.md)
 [![License](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
@@ -13,14 +13,14 @@
 
 ### Installation
 ```bash
-npm install puijs lucide-react
+npm install @phiace/puijs lucide-react
 ```
 
 ### Import Styles & Wrap Root Provider
 ```tsx
-import 'puijs/styles';
-import 'puijs/tokens';
-import { PuiProvider } from 'puijs';
+import '@phiace/puijs/styles';
+import '@phiace/puijs/tokens';
+import { PuiProvider } from '@phiace/puijs';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -49,7 +49,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 ### Pure UI & Commerce
 ```tsx
-import { ProductCard, Price, useCart } from 'puijs';
+import { ProductCard, Price, useCart } from '@phiace/puijs';
 
 export const ProductListing = ({ product }: { product: any }) => {
   const cart = useCart();
@@ -67,7 +67,7 @@ export const ProductListing = ({ product }: { product: any }) => {
 
 ### Reactive Store & Time-Travel
 ```tsx
-import { createStore, useStore } from 'puijs';
+import { createStore, useStore } from '@phiace/puijs';
 
 const counterStore = createStore((set, get) => ({
   count: 0,

@@ -54,7 +54,7 @@ export const SpatialPage: React.FC = () => {
                         <Td>
                           <Stack direction="column" gap={1}>
                             <Text size="sm" weight="medium">{pt.similarity.toFixed(3)}</Text>
-                            <ProgressBar value={pt.similarity * 100} variant="success" size="sm" />
+                            <ProgressBar value={pt.similarity} intent="success" size="sm" />
                           </Stack>
                         </Td>
                       </Tr>

@@ -14,6 +14,9 @@
   transition: width var(--phi-transition-normal);
 }
 
+.size-sm { height: 4px; }
+.size-lg { height: 12px; }
+
 .intent-primary .meter { background-color: var(--phi-color-primary); }
 .intent-success .meter { background-color: var(--phi-color-success); }
 .intent-warning .meter { background-color: var(--phi-color-warning); }

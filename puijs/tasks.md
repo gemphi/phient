@@ -27,6 +27,13 @@ npm install
 npm run dev
 ```
 
+### Running the Phiegg Operations Cockpit (`phiegg`)
+```bash
+cd apps/phiegg
+npm install
+npm run dev
+```
+
 ---
 
 ## 2. Validation & Testing Tasks
@@ -37,8 +44,9 @@ cd apps/pui-book
 npm test
 ```
 
-### Typecheck Core Library
+### Typecheck and Build Core Library
 ```bash
-cd pui
+cd puijs
 npm run typecheck
+npm run build
 ```

@@ -27,7 +27,7 @@ export * from './api';
 export * from './hooks';
 
 // Theme Providers & Global Context
-export * from './providers/PuiProvider';
+export * from './providers';
 
 // Utility Helpers
 export * from './utils/cn';

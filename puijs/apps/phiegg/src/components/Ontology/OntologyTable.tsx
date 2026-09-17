@@ -47,7 +47,7 @@ export const OntologyTable: React.FC<OntologyTableProps> = ({ currentType, onSel
                 <Td>{row.origin}</Td>
                 <Td>{row.dest}</Td>
                 <Td>
-                  <Tag intent={row.status === 'EN_ROUTE' ? 'success' : row.status === 'DELAYED' ? 'danger' : 'warning'} minimal round size="sm">
+                  <Tag intent={row.status === 'EN_ROUTE' ? 'success' : row.status === 'DELAYED' ? 'error' : 'warning'} minimal round size="sm">
                     {row.status}
                   </Tag>
                 </Td>

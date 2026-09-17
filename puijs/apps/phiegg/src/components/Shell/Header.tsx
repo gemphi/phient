@@ -16,7 +16,7 @@ const BRAND_OPTIONS = [
 ];
 
 export const Header: React.FC<HeaderProps> = () => {
-  const { theme, setTheme, brand, setBrand } = usePuiTheme();
+  const { theme, setTheme, brandId, setBrandId } = usePuiTheme();
 
   return (
     <Navbar sticky variant="solid" height={48}>
@@ -40,9 +40,9 @@ export const Header: React.FC<HeaderProps> = () => {
         <Stack direction="row" align="center" gap={2}>
           <Select
             size="sm"
-            value={brand}
+            value={brandId}
             options={BRAND_OPTIONS}
-            onChange={(e) => setBrand(e.target.value as any)}
+            onChange={(e) => setBrandId(e.target.value)}
           />
           <Button
             variant="ghost"

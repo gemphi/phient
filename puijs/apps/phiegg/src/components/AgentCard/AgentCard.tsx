@@ -67,7 +67,7 @@ export const AgentCard: React.FC<AgentCardProps> = ({ agent, isSelected, onSelec
             </Stack>
           </Stack>
 
-          <ProgressBar value={agent.orderParam * 100} variant={agent.orderParam > 0.98 ? 'success' : 'primary'} size="sm" />
+          <ProgressBar value={agent.orderParam} intent={agent.orderParam > 0.98 ? 'success' : 'primary'} size="sm" />
         </Stack>
       </CardBody>
 

@@ -21,7 +21,6 @@ export default defineConfig({
       'react': path.resolve(__dirname, './node_modules/react'),
       'react-dom': path.resolve(__dirname, './node_modules/react-dom'),
       'react/jsx-runtime': path.resolve(__dirname, './node_modules/react/jsx-runtime'),
-      'lucide-react': path.resolve(__dirname, './node_modules/lucide-react'),
     },
     dedupe: ['react', 'react-dom', 'lucide-react'],
   },

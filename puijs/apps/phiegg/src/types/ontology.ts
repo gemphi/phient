@@ -22,7 +22,7 @@ export interface LinkTypeDef {
   displayName: string;
   sourceType: string;
   targetType: string;
-  cardinality: 'ONE_TO_ONE' | 'ONE_TO_MANY' | 'MANY_TO_MANY';
+  cardinality: 'ONE_TO_ONE' | 'ONE_TO_MANY' | 'MANY_TO_ONE' | 'MANY_TO_MANY';
 }
 
 export interface ActionDef {

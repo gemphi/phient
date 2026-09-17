@@ -26,5 +26,5 @@
       "puijs/*": ["../../src/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "../../src/scss.d.ts"]
 }

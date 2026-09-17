@@ -33,7 +33,7 @@ export const OrchestrationPage: React.FC = () => {
           </CardHeader>
           <CardBody>
             <Stack direction="column" gap={3}>
-              <ProgressBar value={80} variant="primary" size="md" />
+              <ProgressBar value={0.8} intent="primary" size="md" />
 
               <Stack direction="column" gap={2}>
                 {PLAYBOOK_STEPS.map((step) => {

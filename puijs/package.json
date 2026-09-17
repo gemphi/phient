@@ -1,16 +1,17 @@
 {
   "name": "@phiace/puijs",
-  "version": "0.3.4",
+  "version": "1.0.0",
+  "type": "module",
   "description": "Industrial React component library and enterprise design system modeled after Palantir Blueprint",
   "author": "bdizha <bdizha@gmail.com>",
   "license": "MIT",
   "homepage": "https://puijs.com",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gemphi/puijs.git"
+    "url": "git+https://github.com/gemphi/phient.git"
   },
   "bugs": {
-    "url": "https://github.com/gemphi/puijs/issues"
+    "url": "https://github.com/gemphi/phient/issues"
   },
   "keywords": [
     "react",
@@ -22,17 +23,96 @@
     "puijs",
     "enterprise-ui"
   ],
-  "main": "./src/index.ts",
-  "module": "./src/index.ts",
-  "types": "./src/index.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./src/index.ts",
-    "./styles": "./src/styles/core.scss",
-    "./tokens": "./src/tokens/tokens.scss",
-    "./utils": "./src/utils/cn.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./components": {
+      "types": "./dist/components/index.d.ts",
+      "import": "./dist/components/index.js"
+    },
+    "./primitives": {
+      "types": "./dist/components/primitives/index.d.ts",
+      "import": "./dist/components/primitives/index.js"
+    },
+    "./layout": {
+      "types": "./dist/components/layout/index.d.ts",
+      "import": "./dist/components/layout/index.js"
+    },
+    "./forms": {
+      "types": "./dist/components/forms/index.d.ts",
+      "import": "./dist/components/forms/index.js"
+    },
+    "./overlays": {
+      "types": "./dist/components/overlays/index.d.ts",
+      "import": "./dist/components/overlays/index.js"
+    },
+    "./feedback": {
+      "types": "./dist/components/feedback/index.d.ts",
+      "import": "./dist/components/feedback/index.js"
+    },
+    "./navigation": {
+      "types": "./dist/components/navigation/index.d.ts",
+      "import": "./dist/components/navigation/index.js"
+    },
+    "./data-display": {
+      "types": "./dist/components/data-display/index.d.ts",
+      "import": "./dist/components/data-display/index.js"
+    },
+    "./display": {
+      "types": "./dist/components/display/index.d.ts",
+      "import": "./dist/components/display/index.js"
+    },
+    "./media": {
+      "types": "./dist/components/media/index.d.ts",
+      "import": "./dist/components/media/index.js"
+    },
+    "./commerce": {
+      "types": "./dist/components/commerce/index.d.ts",
+      "import": "./dist/components/commerce/index.js"
+    },
+    "./store": {
+      "types": "./dist/store/index.d.ts",
+      "import": "./dist/store/index.js"
+    },
+    "./services": {
+      "types": "./dist/services/index.d.ts",
+      "import": "./dist/services/index.js"
+    },
+    "./api": {
+      "types": "./dist/api/index.d.ts",
+      "import": "./dist/api/index.js"
+    },
+    "./hooks": {
+      "types": "./dist/hooks/index.d.ts",
+      "import": "./dist/hooks/index.js"
+    },
+    "./providers": {
+      "types": "./dist/providers/index.d.ts",
+      "import": "./dist/providers/index.js"
+    },
+    "./styles": {
+      "types": "./dist/styles/core.scss.d.ts",
+      "default": "./dist/styles/core.scss"
+    },
+    "./tokens": {
+      "default": "./dist/tokens/tokens.scss"
+    },
+    "./utils": {
+      "types": "./dist/utils/cn.d.ts",
+      "import": "./dist/utils/cn.js"
+    },
+    "./package.json": "./package.json"
   },
+  "sideEffects": [
+    "**/*.scss",
+    "**/*.css"
+  ],
   "files": [
-    "src",
     "dist",
     "README.md",
     "LICENSE"
@@ -52,7 +132,9 @@
     "typescript": "^5.0.0"
   },
   "scripts": {
+    "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
     "typecheck": "tsc --noEmit",
-    "build": "tsc"
+    "build": "npm run clean && tsc -p tsconfig.build.json && node scripts/copy-styles.mjs",
+    "prepublishOnly": "npm run build"
   }
 }

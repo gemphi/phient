@@ -5,10 +5,12 @@ import { cn } from '../../../utils/cn';
 import styles from './styles.module.scss';
 
 export type ProgressBarIntent = 'primary' | 'success' | 'warning' | 'error' | 'none';
+export type ProgressBarSize = 'sm' | 'md' | 'lg';
 
 export interface ProgressBarProps extends React.HTMLAttributes<HTMLDivElement> {
   value?: number; // 0 to 1, or undefined for indeterminate
   intent?: ProgressBarIntent;
+  size?: ProgressBarSize;
   animate?: boolean;
   striped?: boolean;
 }
@@ -16,6 +18,7 @@ export interface ProgressBarProps extends React.HTMLAttributes<HTMLDivElement> {
 export const ProgressBar: React.FC<ProgressBarProps> = ({
   value,
   intent = 'primary',
+  size = 'md',
   animate = false,
   striped = false,
   className,
@@ -29,6 +32,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
       className={cn(
         styles.progressBar,
         styles[`intent-${intent}`],
+        styles[`size-${size}`],
         isIndeterminate && styles.indeterminate,
         striped && styles.striped,
         animate && styles.animate,

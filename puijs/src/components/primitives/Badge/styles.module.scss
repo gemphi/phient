@@ -16,9 +16,22 @@
   color: var(--phi-color-primary);
 }
 
-.secondary {
+.secondary,
+.neutral {
   background-color: var(--phi-color-background-secondary);
   color: var(--phi-color-text-secondary);
+}
+
+.size-sm {
+  padding: 0.125rem 0.375rem;
+  font-size: 0.625rem;
+  line-height: 1.25rem;
+}
+
+.size-lg {
+  padding: 0.375rem 0.75rem;
+  font-size: var(--phi-font-size-sm);
+  line-height: 1.25rem;
 }
 
 .success {
