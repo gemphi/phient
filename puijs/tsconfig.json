@@ -12,7 +12,6 @@
     "jsx": "react-jsx",
     "strict": true,
     "declaration": true,
-    "baseUrl": ".",
     "paths": {
       "@pui/components": ["./src"],
       "@pui/components/*": ["./src/*"]
