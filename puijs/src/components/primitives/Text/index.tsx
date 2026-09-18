@@ -21,6 +21,11 @@ export type TextProps = React.HTMLAttributes<HTMLElement> & {
   size?: TextSize;
   weight?: TextWeight;
   align?: TextAlign;
+  gradient?: boolean;
+  mono?: boolean;
+  preWrap?: boolean;
+  blink?: boolean;
+  lineHeight?: 'tight' | 'normal' | 'relaxed';
   as?: 'p' | 'span' | 'div' | 'label' | any;
   children?: React.ReactNode;
 };
@@ -31,6 +36,11 @@ export const Text = ({
   size = 'md',
   weight = 'normal',
   align = 'left',
+  gradient = false,
+  mono = false,
+  preWrap = false,
+  blink = false,
+  lineHeight = 'normal',
   as: Component = 'p',
   className = '',
   children,
@@ -48,6 +58,11 @@ export const Text = ({
         styles[`size-${resolvedSize}`],
         styles[`weight-${weight}`],
         styles[`align-${align}`],
+        gradient && styles.gradient,
+        mono && styles.mono,
+        preWrap && styles.preWrap,
+        blink && styles.blink,
+        styles[`line-height-${lineHeight}`],
         className
       )}
       {...props}

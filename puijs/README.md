@@ -38,6 +38,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 | Module | Exports & Capabilities |
 |:---|:---|
 | **Presentation Primitives** | `Button`, `Tag`, `Badge`, `Callout`, `Card`, `Table`, `Tree`, `Dialog`, `Drawer`, `Toast` |
+| **Layout Primitives** | `Page`, `Section`, `Stack`, `Grid`, `Container`, `Row`, `Col` |
+| **Data Display** | `Table`, `Tree`, `Card`, `CodeBlock`, `ThreeDMode` |
 | **Commerce Suite** | `Price`, `ProductCard`, `ProductGrid`, `CartDrawer`, `CartItem`, `CartSummary`, `OrderCard`, `FacetFilter` |
 | **Reactive Store Layer** | `createStore`, `useStore` (`useSyncExternalStore`), `cartStore`, `wishlistStore`, `persist`, `logger` |
 | **Service Layer & DI** | `ServiceContainer`, `BaseService`, `EventEmitter`, `useService`, `TelemetryService`, `CartService` |
@@ -65,7 +67,18 @@ export const ProductListing = ({ product }: { product: any }) => {
 };
 ```
 
-### Reactive Store & Time-Travel
+### Layout & Flex Sharing
+```tsx
+import { Section, Stack } from '@phiace/puijs';
+
+<Section variant="page">
+  <Stack fill>
+    <Stack>Auto-sized child</Stack>
+    <Stack fill>Remaining space</Stack>
+  </Stack>
+</Section>
+```
+
 ```tsx
 import { createStore, useStore } from '@phiace/puijs';
 

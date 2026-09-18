@@ -3,11 +3,14 @@
 import React, { useState, useEffect } from 'react';
 import {
   Card,
+  CardBody,
   Button,
   Stack,
   Text,
   Badge,
   Callout,
+  CodeBlock,
+  Icon,
   useService,
   TelemetryService,
 } from '@pui/components';
@@ -29,48 +32,57 @@ export const ServiceExample: React.FC = () => {
   };
 
   return (
-    <Card style={{ padding: '1.5rem' }}>
-      <Stack direction="column" gap={3}>
-        <Callout intent="warning" title="Dependency Injection & Event Bus (Inversion of Control)">
-          Services encapsulate asynchronous business rules, background jobs, and emit events without tying to React UI lifecycles.
-        </Callout>
+    <Card>
+      <CardBody>
+        <Stack direction="column" gap={3}>
+          <Callout intent="warning" title="Dependency Injection & Event Bus (Inversion of Control)">
+            Services encapsulate asynchronous business rules, background jobs, and emit events without tying to React UI lifecycles.
+          </Callout>
 
-        <Stack direction="row" gap={2}>
-          <Button
-            variant="primary"
-            size="sm"
-            icon={<Send size={14} />}
-            onClick={() => fireEvent('agent.plan.generated')}
+          <Stack direction="row" gap={2}>
+            <Button
+              variant="primary"
+              size="sm"
+              icon={<Icon icon={Send} size="xs" />}
+              onClick={() => fireEvent('agent.plan.generated')}
+            >
+              Emit "agent.plan.generated"
+            </Button>
+            <Button
+              variant="secondary"
+              size="sm"
+              icon={<Icon icon={Activity} size="xs" />}
+              onClick={() => fireEvent('telemetry.heartbeat')}
+            >
+              Emit "telemetry.heartbeat"
+            </Button>
+          </Stack>
+
+          <CodeBlock
+            variant="dark"
+            header={
+              <>
+                <Icon icon={Terminal} size="xs" tone="muted" />
+                <Text size="sm" intent="muted">Service Event Stream ({events.length} received):</Text>
+              </>
+            }
           >
-            Emit "agent.plan.generated"
-          </Button>
-          <Button
-            variant="secondary"
-            size="sm"
-            icon={<Activity size={14} />}
-            onClick={() => fireEvent('telemetry.heartbeat')}
-          >
-            Emit "telemetry.heartbeat"
-          </Button>
+            {events.length === 0 ? (
+              <Text as="span" size="sm" mono intent="muted">
+                No events emitted yet. Click a button above.
+              </Text>
+            ) : (
+              events.map((ev, i) => (
+                <Text as="span" key={i} size="sm" mono preWrap>
+                  <Text as="span" size="sm" mono intent="info">[{ev.timestamp.slice(11, 19)}]</Text>{' '}
+                  <Text as="span" size="sm" mono intent="success" weight="semibold">{ev.event}</Text>{' '}
+                  <Text as="span" size="sm" mono intent="muted">{JSON.stringify(ev.payload)}</Text>
+                </Text>
+              ))
+            )}
+          </CodeBlock>
         </Stack>
-
-        <div style={{ background: '#0f172a', padding: '1rem', borderRadius: 6, color: '#38bdf8', fontFamily: 'monospace', fontSize: '0.8125rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8, color: '#94a3b8' }}>
-            <Terminal size={14} /> Service Event Stream ({events.length} received):
-          </div>
-          {events.length === 0 ? (
-            <span style={{ color: '#64748b' }}>No events emitted yet. Click a button above.</span>
-          ) : (
-            events.map((ev, i) => (
-              <div key={i} style={{ marginBottom: 4 }}>
-                <span style={{ color: '#a855f7' }}>[{ev.timestamp.slice(11, 19)}]</span>{' '}
-                <span style={{ color: '#22c55e', fontWeight: 600 }}>{ev.event}</span>{' '}
-                <span style={{ color: '#94a3b8' }}>{JSON.stringify(ev.payload)}</span>
-              </div>
-            ))
-          )}
-        </div>
-      </Stack>
+      </CardBody>
     </Card>
   );
 };

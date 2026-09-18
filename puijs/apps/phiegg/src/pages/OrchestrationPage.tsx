@@ -24,7 +24,7 @@ export const OrchestrationPage: React.FC = () => {
           </Button>
         </Stack>
 
-        <Card variant="default" style={{ padding: '16px' }}>
+        <Card variant="default">
           <CardHeader action={<Badge variant="primary" size="md">Workflow: SyncGlobalFleet</Badge>}>
             <Stack direction="row" align="center" gap={2}>
               <Icon icon={GitBranch} size="md" />

@@ -18,7 +18,7 @@ export const OntologyDrawer: React.FC<OntologyDrawerProps> = ({ selectedInstance
     >
       <Stack direction="column" gap={3}>
         <Text size="md" intent="secondary">Inspecting live object properties and linked actions.</Text>
-        <Card variant="compact" style={{ padding: '14px' }}>
+        <Card variant="compact">
           <CardBody>
             <Stack direction="column" gap={2}>
               <Text size="sm" weight="medium">Tail Number: {selectedInstance?.tail}</Text>

@@ -22,7 +22,7 @@ export const SidebarNav: React.FC<SidebarProps> = ({ activeTab, onSelectTab }) =
   return (
     <Sidebar defaultCollapsed={false}>
       <SidebarHeader>
-        <Stack direction="column" gap={1} style={{ textAlign: 'left', width: '100%' }}>
+        <Stack direction="column" gap={1} fill>
           <Title level={5} size="sm">OPERATIONS</Title>
           <Text size="xs" variant="muted">Palantir Foundry Symmetry</Text>
         </Stack>
@@ -40,17 +40,17 @@ export const SidebarNav: React.FC<SidebarProps> = ({ activeTab, onSelectTab }) =
                 className={styles.navButton}
                 onClick={() => onSelectTab(item.id)}
               >
-                <div className={styles.navContent}>
-                  <div className={styles.navLeft}>
+                <Stack direction="row" align="center" justify="between" className={styles.navContent}>
+                  <Stack direction="row" align="center" gap={2} className={styles.navLeft}>
                     <Icon icon={item.icon} size="sm" />
                     <Text size="sm" className={styles.navLabel}>{item.label}</Text>
-                  </div>
+                  </Stack>
                   {item.badge && (
                     <Badge variant={isActive ? 'neutral' : 'primary'} size="sm">
                       {item.badge}
                     </Badge>
                   )}
-                </div>
+                </Stack>
               </Button>
             );
           })}

@@ -13,13 +13,13 @@ export const InspectorDrawer: React.FC<InspectorDrawerProps> = ({ isOpen, onClos
 
   return (
     <Drawer isOpen={isOpen} onClose={onClose} title="PUI Global Inspector" position="right">
-      <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-        <div>
+      <Stack direction="column" gap={5} padding={20}>
+        <Stack direction="column" gap={1}>
           <Title level={5}>Live Design System Controls</Title>
           <Text variant="sm" color="secondary">
             Mutates root CSS custom properties in real-time.
           </Text>
-        </div>
+        </Stack>
 
         <FormGroup label="Active Brand Palette">
           <Select value={brandId} onChange={(e) => setBrandId(e.target.value)}>
@@ -50,7 +50,7 @@ export const InspectorDrawer: React.FC<InspectorDrawerProps> = ({ isOpen, onClos
           <Tag intent="primary">puijs.com</Tag>
           <Tag intent="success">Decoupled Architecture</Tag>
         </Stack>
-      </div>
+      </Stack>
     </Drawer>
   );
 };

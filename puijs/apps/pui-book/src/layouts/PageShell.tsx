@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Title, Text, Stack } from '@pui/components';
+import { Title, Text, Stack, Section, Divider } from '@pui/components';
 
 interface PageShellProps {
   title: string;
@@ -17,21 +17,22 @@ export const PageShell: React.FC<PageShellProps> = ({
   children,
 }) => {
   return (
-    <div style={{ maxWidth: '960px', width: '100%', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '24px' }}>
-      <header style={{ borderBottom: '1px solid var(--phi-color-border-subtle)', paddingBottom: '16px' }}>
+    <Section variant="section" direction="column" gap={6}>
+      <Stack as="header" direction="column" gap={3} padding="0 0 16px 0">
         <Stack direction="row" justify="between" align="center">
-          <Title level={2} style={{ letterSpacing: '-0.02em', margin: 0 }}>{title}</Title>
+          <Title level={2}>{title}</Title>
           {badge}
         </Stack>
         {description && (
-          <Text variant="base" color="secondary" style={{ marginTop: '8px' }}>
+          <Text variant="base" color="secondary">
             {description}
           </Text>
         )}
-      </header>
-      <main style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+        <Divider />
+      </Stack>
+      <Stack as="main" direction="column" gap={8}>
         {children}
-      </main>
-    </div>
+      </Stack>
+    </Section>
   );
 };

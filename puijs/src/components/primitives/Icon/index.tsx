@@ -17,6 +17,7 @@ export type IconProps = {
   name?: LucideIcon;
   icon?: LucideIcon;
   size?: IconSize | number;
+  tone?: 'default' | 'primary' | 'success' | 'warning' | 'danger' | 'info' | 'muted';
   className?: string;
 };
 
@@ -28,9 +29,9 @@ const sizeMap: Record<string, number> = {
   xl: 24,
 };
 
-export const Icon = ({ name, icon, size = ICON_SIZES.MD, className = '' }: IconProps) => {
+export const Icon = ({ name, icon, size = ICON_SIZES.MD, tone = 'default', className = '' }: IconProps) => {
   const IconComponent = icon || name;
   if (!IconComponent) return null;
   const numericSize = typeof size === 'number' ? size : sizeMap[size] || 16;
-  return <IconComponent className={cn(styles.icon, className)} size={numericSize} color="currentColor" />;
+  return <IconComponent className={cn(styles.icon, styles[`tone-${tone}`], className)} size={numericSize} color="currentColor" />;
 };

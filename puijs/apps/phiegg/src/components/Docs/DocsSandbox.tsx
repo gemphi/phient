@@ -10,7 +10,7 @@ interface DocsSandboxProps {
 
 export const DocsSandbox: React.FC<DocsSandboxProps> = ({ isRunning, liveResponse, onRunEndpoint }) => {
   return (
-    <Card variant="default" style={{ padding: '16px' }}>
+    <Card variant="default">
       <CardHeader
         action={
           <Button
@@ -32,13 +32,13 @@ export const DocsSandbox: React.FC<DocsSandboxProps> = ({ isRunning, liveRespons
       <CardBody>
         <Stack direction="column" gap={2}>
           {isRunning ? (
-            <Stack direction="row" align="center" justify="center" gap={2} style={{ padding: 24 }}>
+            <Stack direction="row" align="center" justify="center" gap={2} padding={24}>
               <Spinner size="md" />
               <Text size="md">Calling endpoint...</Text>
             </Stack>
           ) : liveResponse ? (
             <Callout intent="success" title="200 OK - Execution Response" icon={<Icon icon={CheckCircle} size="sm" />}>
-              <Text size="sm" style={{ fontFamily: 'monospace', whiteSpace: 'pre-wrap', lineHeight: '1.6' }}>
+              <Text size="sm" mono preWrap lineHeight="relaxed">
                 {JSON.stringify(liveResponse, null, 2)}
               </Text>
             </Callout>

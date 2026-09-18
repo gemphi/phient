@@ -11,14 +11,14 @@ export const TokensPage: React.FC = () => {
   const coreRows = CORE_TOKENS.map((t) => [
     <strong>{t.name}</strong>,
     <code>{t.variable}</code>,
-    <span style={{ fontFamily: 'monospace' }}>{t.value}</span>,
+    <Text size="sm" mono>{t.value}</Text>,
     t.description,
   ]);
 
   const elevationRows = ELEVATION_TOKENS.map((t) => [
     <strong>{t.name}</strong>,
     <code>{t.variable}</code>,
-    <span style={{ fontFamily: 'monospace' }}>{t.value}</span>,
+    <Text size="sm" mono>{t.value}</Text>,
     t.description,
   ]);
 
@@ -29,13 +29,17 @@ export const TokensPage: React.FC = () => {
       badge={<Tag intent="primary" round>--phi-* Standard</Tag>}
     >
       <Card elevation={1}>
-        <Title level={5} style={{ marginBottom: '16px' }}>Core Color & Surface Tokens</Title>
-        <Table headers={headers} rows={coreRows} />
+        <Stack direction="column" gap={4}>
+          <Title level={5}>Core Color & Surface Tokens</Title>
+          <Table headers={headers} rows={coreRows} />
+        </Stack>
       </Card>
 
       <Card elevation={1}>
-        <Title level={5} style={{ marginBottom: '16px' }}>Elevation & Shadow Levels</Title>
-        <Table headers={headers} rows={elevationRows} />
+        <Stack direction="column" gap={4}>
+          <Title level={5}>Elevation & Shadow Levels</Title>
+          <Table headers={headers} rows={elevationRows} />
+        </Stack>
       </Card>
     </PageShell>
   );

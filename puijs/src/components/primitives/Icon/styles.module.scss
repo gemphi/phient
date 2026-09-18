@@ -5,3 +5,11 @@
   flex-shrink: 0;
   color: currentColor;
 }
+
+.tone-default { color: var(--phi-color-text-primary); }
+.tone-primary { color: var(--phi-color-primary); }
+.tone-success { color: var(--phi-color-success); }
+.tone-warning { color: var(--phi-color-warning); }
+.tone-danger { color: var(--phi-color-error); }
+.tone-info { color: var(--phi-color-info); }
+.tone-muted { color: var(--phi-color-text-muted); }

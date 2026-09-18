@@ -29,13 +29,12 @@ export const AgentCard: React.FC<AgentCardProps> = ({ agent, isSelected, onSelec
       selected={isSelected}
       hoverable
       onClick={() => onSelect(agent.id)}
-      style={{ padding: '16px' }}
     >
       <CardHeader
         action={
           <Tag intent={getIntent()} minimal round size="md">
             <Icon icon={getStatusIcon()} size="xs" />
-            <Text size="sm" weight="semibold" style={{ marginLeft: 4 }}>{agent.status}</Text>
+            <Text size="sm" weight="semibold">{agent.status}</Text>
           </Tag>
         }
       >
@@ -48,7 +47,7 @@ export const AgentCard: React.FC<AgentCardProps> = ({ agent, isSelected, onSelec
 
       <CardBody>
         <Stack direction="column" gap={2}>
-          <Text size="sm" intent="secondary" style={{ minHeight: '38px', lineHeight: '1.5' }}>
+          <Text size="sm" intent="secondary" lineHeight="normal">
             {agent.description}
           </Text>
 
@@ -72,7 +71,7 @@ export const AgentCard: React.FC<AgentCardProps> = ({ agent, isSelected, onSelec
       </CardBody>
 
       <CardFooter>
-        <Stack direction="row" justify="between" align="center" style={{ width: '100%', marginTop: '6px' }}>
+        <Stack direction="row" justify="between" align="center" fill>
           <Text size="sm" intent="muted">Uptime: {agent.uptime}</Text>
           <Button
             size="sm"

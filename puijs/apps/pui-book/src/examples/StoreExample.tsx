@@ -5,6 +5,7 @@ import {
   createStore,
   useStore,
   Card,
+  CardBody,
   Button,
   Stack,
   Text,
@@ -66,7 +67,8 @@ export const StoreExample: React.FC = () => {
   const { count, history, future, increment, decrement, reset, undo, redo } = useStore(demoStore);
 
   return (
-    <Card style={{ padding: '1.5rem' }}>
+    <Card>
+      <CardBody>
       <Stack direction="column" gap={3}>
         <Callout intent="primary" title="Reactive Micro-Store (useSyncExternalStore)">
           Pure observable state container decoupled from React rendering tree with zero unnecessary re-renders.
@@ -74,7 +76,7 @@ export const StoreExample: React.FC = () => {
 
         <Stack direction="row" align="center" justify="space-between">
           <Stack direction="row" align="center" gap={3}>
-            <Text style={{ fontSize: '2rem', fontWeight: 700 }}>{count}</Text>
+            <Text size="2xl" weight="bold">{count}</Text>
             <Badge variant="primary">{history.length} snapshots</Badge>
           </Stack>
 
@@ -97,6 +99,7 @@ export const StoreExample: React.FC = () => {
           </Stack>
         </Stack>
       </Stack>
+      </CardBody>
     </Card>
   );
 };

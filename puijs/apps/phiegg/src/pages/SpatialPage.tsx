@@ -50,7 +50,7 @@ export const SpatialPage: React.FC = () => {
                         <Td><Badge variant="primary">{pt.id}</Badge></Td>
                         <Td><Text size="sm">{pt.label}</Text></Td>
                         <Td><Tag intent="primary" minimal round size="sm">{pt.cluster}</Tag></Td>
-                        <Td><Text size="sm" style={{ fontFamily: 'monospace' }}>{pt.lat.toFixed(4)}, {pt.lon.toFixed(4)}</Text></Td>
+                        <Td><Text size="sm" mono>{pt.lat.toFixed(4)}, {pt.lon.toFixed(4)}</Text></Td>
                         <Td>
                           <Stack direction="column" gap={1}>
                             <Text size="sm" weight="medium">{pt.similarity.toFixed(3)}</Text>
@@ -66,7 +66,7 @@ export const SpatialPage: React.FC = () => {
           </Col>
 
           <Col span={5} xs={12} sm={12} md={12} lg={5}>
-            <Card variant="flat" style={{ padding: '16px' }}>
+            <Card variant="flat">
               <CardHeader>
                 <Stack direction="row" align="center" gap={2}>
                   <Icon icon={MapPin} size="sm" />
@@ -75,7 +75,7 @@ export const SpatialPage: React.FC = () => {
               </CardHeader>
               <CardBody>
                 <Stack direction="column" gap={2}>
-                  <Card variant="compact" style={{ padding: '12px' }}>
+                  <Card variant="compact">
                     <CardBody>
                       <Stack direction="column" gap={1}>
                         <Text size="sm" intent="primary" weight="medium">Root Tree Hash: 0x8849...210f</Text>

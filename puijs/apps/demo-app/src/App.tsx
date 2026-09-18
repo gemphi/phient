@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Callout, Drawer, Title, Text, Divider } from '@pui/components';
+import { Callout, Drawer, Title, Text, Divider, Page, Stack } from '@pui/components';
 import { CockpitHeader } from './CockpitHeader';
 import { CockpitSidebar } from './CockpitSidebar';
 import { MetricsGrid } from './MetricsGrid';
@@ -12,30 +12,32 @@ export default function App() {
   const [selectedNode, setSelectedNode] = useState('ontology/geo');
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: 'var(--phi-color-background)' }}>
-      <CockpitHeader />
-      <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr', flex: 1 }}>
-        <CockpitSidebar onSelect={setSelectedNode} />
-        <main style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+    <>
+      <Page
+        header={<CockpitHeader />}
+        sidebar={<CockpitSidebar onSelect={setSelectedNode} />}
+      >
+        <Stack direction="column" gap={6}>
           <Callout intent="primary" title="Palantir Foundry / Blueprint Decoupled Standard">
             All UI components shown here render pure, state-agnostic primitives with zero business logic coupling.
           </Callout>
           <MetricsGrid />
           <SwarmTable onInspect={() => setInspectorOpen(true)} />
-        </main>
-      </div>
+        </Stack>
+      </Page>
+
       <Drawer isOpen={inspectorOpen} onClose={() => setInspectorOpen(false)} title="Telemetry Inspector" position="right">
-        <div style={{ padding: '20px' }}>
+        <Stack direction="column" gap={4}>
           <Title level={5}>Node Details: {selectedNode}</Title>
-          <Text variant="sm" color="secondary" style={{ margin: '8px 0 16px 0' }}>
+          <Text variant="sm" color="secondary">
             Axiomatic phase properties and state mutations.
           </Text>
-          <Divider style={{ margin: '16px 0' }} />
+          <Divider />
           <Callout intent="success" title="Health: Optimal">
             Low latency, zero phase drift detected across the Kuramoto coupling cycle.
           </Callout>
-        </div>
+        </Stack>
       </Drawer>
-    </div>
+    </>
   );
 }

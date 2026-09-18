@@ -1,3 +1,70 @@
 .stack {
   display: flex;
 }
+
+.variant-page {
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--phi-color-background);
+  color: var(--phi-color-text-primary);
+}
+
+.variant-header {
+  width: 100%;
+  min-height: 56px;
+  padding: 0 var(--phi-space-3, 24px);
+  border-bottom: 1px solid var(--phi-color-border);
+  background-color: var(--phi-color-background-card);
+}
+
+.variant-footer {
+  width: 100%;
+  min-height: 56px;
+  padding: 0 var(--phi-space-3, 24px);
+  border-top: 1px solid var(--phi-color-border);
+  background-color: var(--phi-color-background-card);
+}
+
+.variant-sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  padding: var(--phi-space-3, 24px);
+  border-right: 1px solid var(--phi-color-border);
+  background-color: var(--phi-color-background-secondary);
+}
+
+.variant-main {
+  flex: 1 1 0%;
+  min-width: 0;
+  padding: var(--phi-space-4, 32px);
+  overflow-y: auto;
+}
+
+.variant-section {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: var(--phi-space-8, 64px) var(--phi-space-4, 32px);
+}
+
+.variant-content {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: var(--phi-space-6, 48px) var(--phi-space-4, 24px);
+}
+
+.variant-hero {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: var(--phi-space-10, 80px) var(--phi-space-4, 32px);
+  text-align: center;
+}
+
+.variant-surface {
+  background-color: var(--phi-color-background-card);
+  border: 1px solid var(--phi-color-border);
+  border-radius: var(--phi-radius-lg);
+  padding: var(--phi-space-4, 24px);
+}

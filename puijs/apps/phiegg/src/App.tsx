@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Stack } from '@pui/components';
+import { Page } from '@pui/components';
 import { Header } from './components/Shell/Header';
 import { SidebarNav } from './components/Shell/Sidebar';
 import { AgentsPage } from './pages/AgentsPage';
@@ -27,23 +27,11 @@ export const App: React.FC = () => {
   };
 
   return (
-    <Stack direction="column" style={{ width: '100vw', height: '100vh', overflow: 'hidden' }}>
-      <Header activeTab={activeTab} onSelectTab={setActiveTab} />
-      <Stack direction="row" style={{ flexGrow: 1, overflow: 'hidden' }}>
-        <SidebarNav activeTab={activeTab} onSelectTab={setActiveTab} />
-        <Stack
-          direction="column"
-          style={{
-            flexGrow: 1,
-            height: '100%',
-            overflowY: 'auto',
-            padding: '20px 28px',
-            background: 'var(--pui-background, #0f172a)',
-          }}
-        >
-          {renderActivePage()}
-        </Stack>
-      </Stack>
-    </Stack>
+    <Page
+      header={<Header activeTab={activeTab} onSelectTab={setActiveTab} />}
+      sidebar={<SidebarNav activeTab={activeTab} onSelectTab={setActiveTab} />}
+    >
+      {renderActivePage()}
+    </Page>
   );
 };

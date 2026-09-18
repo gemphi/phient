@@ -27,7 +27,7 @@ export const AgentsPage: React.FC = () => {
 
         <Grid gap={3} xs={1} sm={2} md={4} lg={4}>
           <Col span={3} xs={12} sm={6} md={3} lg={3}>
-            <Card variant="flat" style={{ padding: '16px' }}>
+            <Card variant="flat">
               <CardBody>
                 <Stack direction="row" align="center" gap={3}>
                   <Icon icon={Bot} size="lg" />
@@ -40,7 +40,7 @@ export const AgentsPage: React.FC = () => {
             </Card>
           </Col>
           <Col span={3} xs={12} sm={6} md={3} lg={3}>
-            <Card variant="flat" style={{ padding: '16px' }}>
+            <Card variant="flat">
               <CardBody>
                 <Stack direction="row" align="center" gap={3}>
                   <Icon icon={Zap} size="lg" />
@@ -53,7 +53,7 @@ export const AgentsPage: React.FC = () => {
             </Card>
           </Col>
           <Col span={3} xs={12} sm={6} md={3} lg={3}>
-            <Card variant="flat" style={{ padding: '16px' }}>
+            <Card variant="flat">
               <CardBody>
                 <Stack direction="row" align="center" gap={3}>
                   <Icon icon={Clock} size="lg" />
@@ -66,7 +66,7 @@ export const AgentsPage: React.FC = () => {
             </Card>
           </Col>
           <Col span={3} xs={12} sm={6} md={3} lg={3}>
-            <Card variant="flat" style={{ padding: '16px' }}>
+            <Card variant="flat">
               <CardBody>
                 <Stack direction="row" align="center" gap={3}>
                   <Icon icon={ShieldCheck} size="lg" />

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Card, FormGroup, Input, Select, Switch, Tag, Button, Stack, Title, Text, Callout } from '@pui/components';
+import { Card, FormGroup, Input, Select, Switch, Tag, Button, Stack, Grid, Title, Text, Callout, Icon } from '@pui/components';
 import { PageShell } from '../layouts/PageShell';
 import { Play, Sparkles, RefreshCw } from 'lucide-react';
 
@@ -18,11 +18,10 @@ export const PlaygroundPage: React.FC = () => {
       description="Test component variants, props, and states dynamically in real-time."
       badge={<Tag intent="success" round>Live Sandbox</Tag>}
     >
-      <div style={{ display: 'grid', gridTemplateColumns: '320px 1fr', gap: '24px' }}>
-        {/* Controls Panel */}
+      <Grid columns={2} gap={6}>
         <Card elevation={1}>
-          <Title level={5} style={{ marginBottom: '16px' }}>Component Props</Title>
-          <Stack direction="column" gap={3}>
+          <Stack direction="column" gap={4}>
+            <Title level={5}>Component Props</Title>
             <FormGroup label="Button Text">
               <Input value={btnText} onChange={(e) => setBtnText(e.target.value)} />
             </FormGroup>
@@ -61,10 +60,9 @@ export const PlaygroundPage: React.FC = () => {
           </Stack>
         </Card>
 
-        {/* Live Preview Canvas */}
-        <Card elevation={1} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', minHeight: '300px', backgroundColor: 'var(--phi-color-background-secondary)' }}>
-          <Stack direction="column" gap={4} align="center">
-            <Button variant={btnVariant as any} size={btnSize as any} loading={loading} icon={<Play size={14} />}>
+        <Card elevation={1}>
+          <Stack direction="column" align="center" justify="center" minHeight={300} gap={4}>
+            <Button variant={btnVariant as any} size={btnSize as any} loading={loading} icon={<Icon icon={Play} size="xs" />}>
               {btnText}
             </Button>
             <Tag intent={tagIntent as any} round>
@@ -72,7 +70,7 @@ export const PlaygroundPage: React.FC = () => {
             </Tag>
           </Stack>
         </Card>
-      </div>
+      </Grid>
     </PageShell>
   );
 };

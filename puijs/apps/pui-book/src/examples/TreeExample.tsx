@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Tree, TreeNode, Card, Stack, Text, Tag } from '@pui/components';
+import { Tree, TreeNode, Card, CardBody, Stack, Text, Tag } from '@pui/components';
 import { Folder, Database, FileCode, Layers } from 'lucide-react';
 
 export const TreeExample: React.FC = () => {
@@ -28,11 +28,15 @@ export const TreeExample: React.FC = () => {
 
   return (
     <Card elevation={1}>
-      <Stack direction="row" justify="between" align="center" style={{ marginBottom: '12px' }}>
-        <Text weight="semibold">Hierarchical Tree View (Palantir Blueprint)</Text>
-        <Tag intent="primary" round>Selected: {selected}</Tag>
-      </Stack>
-      <Tree nodes={nodes} onNodeClick={(node) => setSelected(String(node.id))} />
+      <CardBody>
+        <Stack direction="column" gap={3}>
+          <Stack direction="row" justify="between" align="center">
+            <Text weight="semibold">Hierarchical Tree View (Palantir Blueprint)</Text>
+            <Tag intent="primary" round>Selected: {selected}</Tag>
+          </Stack>
+          <Tree nodes={nodes} onNodeClick={(node) => setSelected(String(node.id))} />
+        </Stack>
+      </CardBody>
     </Card>
   );
 };

@@ -16,7 +16,7 @@ export const DocsContent: React.FC<DocsContentProps> = ({ endpoint, activeLangua
   };
 
   return (
-    <Card variant="default" style={{ padding: '16px' }}>
+    <Card variant="default">
       <CardHeader action={<Tag intent="primary" minimal round size="md">{endpoint.method}</Tag>}>
         <Stack direction="row" align="center" gap={2}>
           <Icon icon={BookOpen} size="md" />
@@ -26,14 +26,14 @@ export const DocsContent: React.FC<DocsContentProps> = ({ endpoint, activeLangua
       <CardBody>
         <Stack direction="column" gap={3}>
           <Text size="md" intent="secondary">{endpoint.description}</Text>
-          <Card variant="compact" style={{ padding: '10px 14px' }}>
+          <Card variant="compact">
             <CardBody>
-              <Text size="sm" intent="primary" weight="medium" style={{ fontFamily: 'monospace' }}>Path: {endpoint.path}</Text>
+              <Text size="sm" intent="primary" weight="medium" mono>Path: {endpoint.path}</Text>
             </CardBody>
           </Card>
           <Title level={5} size="sm">SDK Code Snippet ({activeLanguage.toUpperCase()})</Title>
           <Callout intent="primary" icon={<Icon icon={Code} size="sm" />}>
-            <Text size="sm" style={{ fontFamily: 'monospace', whiteSpace: 'pre-wrap', lineHeight: '1.6' }}>
+            <Text size="sm" mono preWrap lineHeight="relaxed">
               {getCodeSnippet()}
             </Text>
           </Callout>

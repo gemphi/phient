@@ -1,0 +1,51 @@
+.wrapper {
+  padding: 1rem;
+  border-radius: var(--phi-radius-md, 6px);
+  overflow: hidden;
+}
+
+.default {
+  background-color: var(--phi-color-background-secondary);
+  color: var(--phi-color-text-primary);
+  border: 1px solid var(--phi-color-border);
+}
+
+.dark {
+  background-color: #0f172a;
+  color: #38bdf8;
+  border: 1px solid #1e293b;
+}
+
+.terminal {
+  background-color: #090d16;
+  color: #e2e8f0;
+  border: 1px solid #1e293b;
+}
+
+.header {
+  margin-bottom: 0.5rem;
+  color: #94a3b8;
+  font-size: 0.8125rem;
+}
+
+.codeBlock {
+  margin: 0;
+  padding: 0;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  overflow: auto;
+  font-family: inherit;
+}
+
+.mono {
+  font-family: var(--phi-font-mono, monospace);
+}
+
+.preWrap {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.scrollable {
+  max-height: 400px;
+}

@@ -15,7 +15,7 @@ export const AgentChat: React.FC = () => {
   };
 
   return (
-    <Card variant="default" style={{ padding: '16px' }}>
+    <Card variant="default">
       <CardHeader
         action={
           <Stack direction="row" align="center" gap={2}>
@@ -33,7 +33,7 @@ export const AgentChat: React.FC = () => {
       </CardHeader>
 
       <CardBody>
-        <Stack direction="column" gap={3} style={{ maxHeight: '460px', overflowY: 'auto', paddingRight: '4px' }}>
+        <Stack direction="column" gap={3} maxHeight={460} overflow="auto" padding="0 4px 0 0">
           {chatMessages.map((msg) => {
             const isAgent = msg.sender === 'agent';
             const isUser = msg.sender === 'user';
@@ -45,9 +45,9 @@ export const AgentChat: React.FC = () => {
                 icon={<Icon icon={isAgent ? Bot : User} size="sm" />}
               >
                 <Stack direction="column" gap={2}>
-                  <Text size="md" style={{ lineHeight: '1.5' }}>{msg.content}</Text>
+                  <Text size="md" lineHeight="normal">{msg.content}</Text>
                   {msg.traces && (
-                    <Stack direction="column" gap={1} style={{ marginTop: 6, background: 'rgba(0,0,0,0.2)', padding: '8px 12px', borderRadius: '6px' }}>
+                    <Stack direction="column" gap={1} variant="surface" margin={6}>
                       <Text size="xs" weight="semibold" intent="secondary">Execution Trace Receipts:</Text>
                       {msg.traces.map((trace) => (
                         <Stack key={trace.step} direction="row" align="center" gap={2}>
@@ -67,14 +67,13 @@ export const AgentChat: React.FC = () => {
       </CardBody>
 
       <CardFooter>
-        <Stack direction="row" gap={2} align="center" style={{ width: '100%', marginTop: '8px' }}>
+        <Stack direction="row" gap={2} align="center" fill>
           <Input
             placeholder={`Ask ${selectedAgentId} or dispatch action...`}
             value={activePrompt}
             onChange={(e) => setPrompt(e.target.value)}
             onKeyDown={handleKeyDown}
             disabled={isStreaming}
-            style={{ fontSize: '14px' }}
           />
           <Button
             variant="primary"

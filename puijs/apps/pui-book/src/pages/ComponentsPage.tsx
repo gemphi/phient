@@ -26,21 +26,25 @@ export const ComponentsPage: React.FC<{ category?: string }> = ({ category }) =>
       badge={<Tag intent="primary" round>{filtered.length} Components</Tag>}
     >
       <Card elevation={1}>
-        <Title level={5} style={{ marginBottom: '16px' }}>Interactive Demonstrations</Title>
         <Stack direction="column" gap={4}>
-          <ButtonExample />
-          <TagExample />
-          <CalloutExample />
-          <TreeExample />
-          <TableExample />
-          <FormExample />
-          <OverlayExample />
+          <Title level={5}>Interactive Demonstrations</Title>
+          <Stack direction="column" gap={4}>
+            <ButtonExample />
+            <TagExample />
+            <CalloutExample />
+            <TreeExample />
+            <TableExample />
+            <FormExample />
+            <OverlayExample />
+          </Stack>
         </Stack>
       </Card>
 
       <Card elevation={1}>
-        <Title level={5} style={{ marginBottom: '16px' }}>Component API Specifications</Title>
-        <Table headers={headers} rows={rows} />
+        <Stack direction="column" gap={4}>
+          <Title level={5}>Component API Specifications</Title>
+          <Table headers={headers} rows={rows} />
+        </Stack>
       </Card>
     </PageShell>
   );

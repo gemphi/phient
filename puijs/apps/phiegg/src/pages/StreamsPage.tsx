@@ -84,7 +84,7 @@ export const StreamsPage: React.FC = () => {
                     <Td><Text size="sm">{pkt.timestamp}</Text></Td>
                     <Td><Tag intent="primary" minimal round size="sm">{pkt.taxonomy}</Tag></Td>
                     <Td><Badge variant="primary">{pkt.source}</Badge></Td>
-                    <Td><Text size="sm" intent="secondary" style={{ fontFamily: 'monospace' }}>{JSON.stringify(pkt.payload)}</Text></Td>
+                    <Td><Text size="sm" mono>{JSON.stringify(pkt.payload)}</Text></Td>
                     <Td>
                       <Stack direction="row" align="center" gap={1}>
                         <Icon icon={ShieldCheck} size="xs" />

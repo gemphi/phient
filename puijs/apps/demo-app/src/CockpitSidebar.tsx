@@ -1,8 +1,16 @@
 'use client';
 
 import React from 'react';
-import { Tree, TreeNode, Title } from '@pui/components';
-import { Database, Layers, Activity } from 'lucide-react';
+import {
+  Tree,
+  TreeNode,
+  Title,
+  Sidebar,
+  SidebarHeader,
+  SidebarBody,
+  Stack,
+} from '@pui/components';
+import { Database, Layers } from 'lucide-react';
 
 export const treeNodes: TreeNode[] = [
   {
@@ -32,11 +40,15 @@ export const treeNodes: TreeNode[] = [
 
 export const CockpitSidebar: React.FC<{ onSelect: (id: string) => void }> = ({ onSelect }) => {
   return (
-    <aside style={{ borderRight: '1px solid var(--phi-color-border)', backgroundColor: 'var(--phi-color-background-secondary)', padding: '16px' }}>
-      <Title level={6} style={{ marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--phi-color-text-muted)' }}>
-        System Hierarchy
-      </Title>
-      <Tree nodes={treeNodes} onNodeClick={(node) => onSelect(String(node.id))} />
-    </aside>
+    <Sidebar defaultCollapsed={false}>
+      <SidebarHeader>
+        <Stack direction="column" gap={1}>
+          <Title level={5} size="sm">System Hierarchy</Title>
+        </Stack>
+      </SidebarHeader>
+      <SidebarBody>
+        <Tree nodes={treeNodes} onNodeClick={(node) => onSelect(String(node.id))} />
+      </SidebarBody>
+    </Sidebar>
   );
 };

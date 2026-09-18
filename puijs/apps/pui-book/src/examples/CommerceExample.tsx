@@ -8,6 +8,7 @@ import {
   Button,
   Stack,
   Card,
+  CardBody,
   Callout,
   useCart,
   useWishlist,
@@ -47,7 +48,8 @@ export const CommerceExample: React.FC = () => {
 
   return (
     <Stack direction="column" gap={4}>
-      <Card style={{ padding: '1.25rem' }}>
+      <Card>
+        <CardBody>
         <Stack direction="row" justify="space-between" align="center">
           <Stack direction="row" gap={2}>
             {['All', 'Hardware', 'Systems', 'Sensors'].map((cat) => (
@@ -71,6 +73,7 @@ export const CommerceExample: React.FC = () => {
             Cart ({cart.getTotalCount()}) - <Price amount={cart.getTotalPrice()} />
           </Button>
         </Stack>
+        </CardBody>
       </Card>
 
       {checkoutSuccess && (

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Button, Card, Callout, Tag, Stack, Grid, Title, Text } from '@pui/components';
+import { Button, Card, Callout, Tag, Stack, Grid, Title, Text, Icon } from '@pui/components';
 import { PageShell } from '../layouts/PageShell';
 import { ArrowRight, Layers, Shield, Zap, Code2 } from 'lucide-react';
 
@@ -16,38 +16,44 @@ export const HomePage: React.FC<{ onNavigate: (p: string) => void }> = ({ onNavi
         PUI primitives contain zero business logic or domain shopping carts. Props flow down, callbacks flow up.
       </Callout>
 
-      <Grid columns="repeat(auto-fit, minmax(280px, 1fr))" gap={4}>
+      <Grid columns={3} gap={4}>
         <Card elevation={1}>
-          <Layers size={20} style={{ color: 'var(--phi-color-primary)', marginBottom: '8px' }} />
-          <Title level={5}>Core Primitives</Title>
-          <Text variant="sm" color="secondary" style={{ marginBottom: '16px' }}>
-            Tree, Table, Card, Dialog, Drawer, Tag, Callout, Switch, and Slider designed for dense applications.
-          </Text>
-          <Button variant="outline" size="sm" onClick={() => onNavigate('/components/primitives')}>
-            View Catalog
-          </Button>
+          <Stack direction="column" gap={3}>
+            <Icon icon={Layers} size="lg" tone="primary" />
+            <Title level={5}>Core Primitives</Title>
+            <Text variant="sm" color="secondary">
+              Tree, Table, Card, Dialog, Drawer, Tag, Callout, Switch, and Slider designed for dense applications.
+            </Text>
+            <Button variant="outline" size="sm" onClick={() => onNavigate('/components/primitives')}>
+              View Catalog
+            </Button>
+          </Stack>
         </Card>
 
         <Card elevation={1}>
-          <Shield size={20} style={{ color: 'var(--phi-color-success)', marginBottom: '8px' }} />
-          <Title level={5}>Strict Design Tokens</Title>
-          <Text variant="sm" color="secondary" style={{ marginBottom: '16px' }}>
-            Centralized --phi-* design tokens with Palantir Foundry, Blueprint, and Emerald theme palettes.
-          </Text>
-          <Button variant="outline" size="sm" onClick={() => onNavigate('/tokens')}>
-            Inspect Tokens
-          </Button>
+          <Stack direction="column" gap={3}>
+            <Icon icon={Shield} size="lg" tone="success" />
+            <Title level={5}>Strict Design Tokens</Title>
+            <Text variant="sm" color="secondary">
+              Centralized --phi-* design tokens with Palantir Foundry, Blueprint, and Emerald theme palettes.
+            </Text>
+            <Button variant="outline" size="sm" onClick={() => onNavigate('/tokens')}>
+              Inspect Tokens
+            </Button>
+          </Stack>
         </Card>
 
         <Card elevation={1}>
-          <Zap size={20} style={{ color: 'var(--phi-color-warning)', marginBottom: '8px' }} />
-          <Title level={5}>Interactive Playground</Title>
-          <Text variant="sm" color="secondary" style={{ marginBottom: '16px' }}>
-            Live component testing sandbox with real-time prop mutation and accessibility verification.
-          </Text>
-          <Button variant="primary" size="sm" onClick={() => onNavigate('/playground')}>
-            Open Playground
-          </Button>
+          <Stack direction="column" gap={3}>
+            <Icon icon={Zap} size="lg" tone="warning" />
+            <Title level={5}>Interactive Playground</Title>
+            <Text variant="sm" color="secondary">
+              Live component testing sandbox with real-time prop mutation and accessibility verification.
+            </Text>
+            <Button variant="primary" size="sm" onClick={() => onNavigate('/playground')}>
+              Open Playground
+            </Button>
+          </Stack>
         </Card>
       </Grid>
     </PageShell>

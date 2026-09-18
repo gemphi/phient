@@ -20,3 +20,11 @@
 .size-xl { font-size: 1.6rem !important; }
 .size-2xl { font-size: 2rem !important; }
 .size-3xl { font-size: 2.5rem !important; }
+
+.gradient {
+  background: var(--phi-brand-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}

@@ -38,7 +38,7 @@ export const OntologyPage: React.FC = () => {
           </Col>
 
           <Col span={4} xs={12} sm={12} md={12} lg={4}>
-            <Card variant="flat" style={{ padding: '16px' }}>
+            <Card variant="flat">
               <CardHeader>
                 <Stack direction="row" align="center" gap={2}>
                   <Icon icon={Layers} size="sm" />
@@ -48,7 +48,7 @@ export const OntologyPage: React.FC = () => {
               <CardBody>
                 <Stack direction="column" gap={2}>
                   {linkTypes.map((link) => (
-                    <Card key={link.id} variant="compact" style={{ padding: '10px 14px' }}>
+                    <Card key={link.id} variant="compact">
                       <CardBody>
                         <Stack direction="row" justify="between" align="center">
                           <Text size="sm" intent="primary" weight="medium">{link.sourceType} → {link.targetType}</Text>

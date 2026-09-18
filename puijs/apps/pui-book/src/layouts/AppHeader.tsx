@@ -1,7 +1,18 @@
 'use client';
 
 import React from 'react';
-import { Button, Input, Select, Stack, Tag, usePuiTheme } from '@pui/components';
+import {
+  Button,
+  Input,
+  Select,
+  Stack,
+  Tag,
+  Title,
+  Icon,
+  Navbar,
+  NavbarSection,
+  usePuiTheme,
+} from '@pui/components';
 import { Search, Sun, Moon, Sparkles, Sliders } from 'lucide-react';
 
 interface AppHeaderProps {
@@ -15,66 +26,56 @@ export const AppHeader: React.FC<AppHeaderProps> = ({
   searchQuery,
   onSearchChange,
 }) => {
-  const { theme, setTheme, brandId, setBrandId, brands, isDark } = usePuiTheme();
+  const { setTheme, brandId, setBrandId, brands, isDark } = usePuiTheme();
 
   return (
-    <header
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '0 24px',
-        height: '56px',
-        borderBottom: '1px solid var(--phi-color-border)',
-        backgroundColor: 'var(--phi-color-background-card)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 10,
-      }}
-    >
-      <Stack direction="row" gap={3} align="center">
-        <span style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--phi-color-primary)' }}>Φ</span>
-        <span style={{ fontWeight: 700, fontSize: '1rem' }}>PUI Documentation & Workbench</span>
-        <Tag intent="primary" minimal round>puijs.com</Tag>
-      </Stack>
+    <Navbar sticky variant="solid" height={56}>
+      <NavbarSection align="start">
+        <Stack direction="row" align="center" gap={3}>
+          <Icon icon={Sparkles} size="md" tone="primary" />
+          <Title level={4} size="sm">PUI Documentation & Workbench</Title>
+          <Tag intent="primary" minimal round>puijs.com</Tag>
+        </Stack>
+      </NavbarSection>
 
-      <Stack direction="row" gap={3} align="center">
-        <Input
-          placeholder="Search components, tokens, APIs..."
-          value={searchQuery}
-          onChange={(e) => onSearchChange(e.target.value)}
-          icon={<Search size={14} />}
-          style={{ width: '260px' }}
-        />
+      <NavbarSection align="end">
+        <Stack direction="row" align="center" gap={3}>
+          <Stack width={260}>
+            <Input
+              placeholder="Search components, tokens, APIs..."
+              value={searchQuery}
+              onChange={(e) => onSearchChange(e.target.value)}
+              icon={<Icon icon={Search} size="xs" tone="muted" />}
+            />
+          </Stack>
 
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setTheme(isDark ? 'light' : 'dark')}
-          icon={isDark ? <Sun size={14} /> : <Moon size={14} />}
-        >
-          {isDark ? 'Light' : 'Dark'}
-        </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setTheme(isDark ? 'light' : 'dark')}
+            icon={<Icon icon={isDark ? Sun : Moon} size="xs" />}
+          >
+            {isDark ? 'Light' : 'Dark'}
+          </Button>
 
-        <Select
-          value={brandId}
-          onChange={(e) => setBrandId(e.target.value)}
-          style={{ width: '140px' }}
-        >
-          {brands.map((b) => (
-            <option key={b.id} value={b.id}>{b.name}</option>
-          ))}
-        </Select>
+          <Stack width={140}>
+            <Select
+              value={brandId}
+              onChange={(e) => setBrandId(e.target.value)}
+              options={brands.map((b) => ({ value: b.id, label: b.name }))}
+            />
+          </Stack>
 
-        <Button
-          variant="secondary"
-          size="sm"
-          icon={<Sliders size={14} />}
-          onClick={onOpenInspector}
-        >
-          Inspector
-        </Button>
-      </Stack>
-    </header>
+          <Button
+            variant="secondary"
+            size="sm"
+            icon={<Icon icon={Sliders} size="xs" />}
+            onClick={onOpenInspector}
+          >
+            Inspector
+          </Button>
+        </Stack>
+      </NavbarSection>
+    </Navbar>
   );
 };

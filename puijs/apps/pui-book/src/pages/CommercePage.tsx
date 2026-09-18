@@ -17,12 +17,12 @@ export const CommercePage: React.FC = () => {
           Components are 100% decoupled from backend schemas. All state (cart, wishlist, catalog, currency) is orchestrated reactively through PUI micro-stores and services.
         </Callout>
 
-        <div>
+        <Stack direction="column" gap={2}>
           <Title level={4}>Interactive Storefront & Cart Drawer</Title>
           <Text variant="muted">
             Add items, toggle wishlist, filter categories, and inspect live cart synchronization.
           </Text>
-        </div>
+        </Stack>
 
         <CommerceExample />
 

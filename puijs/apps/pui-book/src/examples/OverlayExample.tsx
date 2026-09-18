@@ -15,18 +15,16 @@ export const OverlayExample: React.FC = () => {
       </Stack>
 
       <Dialog isOpen={dialogOpen} onClose={() => setDialogOpen(false)} title="Ontology Inspector">
-        <div style={{ padding: '16px 0' }}>
+        <Stack direction="column" gap={3} padding="16px 0">
           <Text>Inspecting entity schema for FinanceTransaction with strict typing invariants.</Text>
-          <div style={{ marginTop: '16px' }}>
-            <ProgressBar value={0.85} intent="primary" />
-          </div>
-        </div>
+          <ProgressBar value={0.85} intent="primary" />
+        </Stack>
       </Dialog>
 
       <Drawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} title="Live Telemetry" position="right">
-        <div style={{ padding: '20px' }}>
+        <Stack direction="column" gap={2} padding={20}>
           <Text variant="sm" color="secondary">Streaming telemetry data from Phiano phase manifold.</Text>
-        </div>
+        </Stack>
       </Drawer>
     </Stack>
   );
