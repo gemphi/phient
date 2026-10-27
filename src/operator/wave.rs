@@ -8,7 +8,7 @@
 //!   Read backwards — which word `w` came after — it has no inverse, so the
 //!   filter is run from the other end: `F(a_u + a_next)` for every word `u`,
 //!   one forward pass each, cached.
-//! - [`MirrorWave`](super::MirrorWave), the mirror (`phical::conjugate`):
+//! - [`MirrorWave`](super::MirrorWave), the mirror (`phiton::conjugate`):
 //!   `q = Hⁿ a_w`, the kind an all-pass filter, read backwards by `H̄`.
 
 use super::model::{kind_token, RelationModel};

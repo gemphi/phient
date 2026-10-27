@@ -4,8 +4,9 @@
 //! conditions (c), grows from it. The Phical paradigm, X ⇒ Y, drives and
 //! composes Phient's Phasor Language Models: Phinet, Phiano, PhiTon. Phical
 //! stores no point: a word is 32–64 relations, each a complex phasor on a
-//! closed circle with a count; meaning is a side effect of pairs of words
-//! moving under a condition.
+//! closed circle; meaning is a side effect of pairs of words moving under a
+//! condition, and they move by the error of what was expected — toward what
+//! came, away from what did not.
 //!
 //! The model itself, apart from any application (paper 25): a word is an
 //! entity told once as a row `(about, kind, other)` under the conditions it
@@ -22,6 +23,7 @@
 //! | [`prose`] | text as a tree of knowing: `Knowing` (learn, `learn_new`, `next`, `go`), the teacher cycle, what is not yet known, held-out scoring (docs/127–138) |
 //! | [`baseline`] | the number to beat: interpolated Kneser-Ney over tokenized sentences |
 //! | [`code`] | Rust read by its own grammar into rows (docs/108, docs/124) |
+//! | [`lineup`] | the readers the arena scores: counts, concepts, the mirror, the operator, and the learner corrected by its error (docs/176, docs/203) |
 //! | [`study`] | step-by-step learning measured honestly: predict first, learn after, one curve for every method (docs/172) |
 //!
 //! phiano holds the applications — students, games, personas, the binaries —
@@ -29,6 +31,7 @@
 
 pub mod baseline;
 pub mod code;
+pub mod lineup;
 pub mod operator;
 pub mod prose;
 pub mod relate;

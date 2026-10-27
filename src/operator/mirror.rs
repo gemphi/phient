@@ -1,10 +1,10 @@
-//! The phase-conjugate mirror (`phical::conjugate::Mirror`) as a [`Wave`]
+//! The phase-conjugate mirror (`phiton::conjugate::Mirror`) as a [`Wave`]
 //! (docs/153): `n` steps on under `next{n}` when the mirror was trained on
 //! that kind and `powers` is off, else under `Hⁿ`; backwards under `H̄`.
 
 use super::wave::{inner, offset_kind, Wave};
 use phical::c64;
-use phical::conjugate::Mirror;
+use phiton::conjugate::Mirror;
 
 pub struct MirrorWave {
     pub m: Mirror,

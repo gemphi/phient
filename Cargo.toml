@@ -12,9 +12,12 @@ path = "src/lib.rs"
 [dependencies]
 phistd = { path = "../phistd" }
 phical = { path = "../phical" }
+# The phase-conjugate mirror in the lineup and the operators (phiton::conjugate).
+phiton = { path = "../phiton" }
 phiecs = { path = "../phiecs" }
 phiclm = { path = "../phiclm" }
 serde = { version = "1.0", features = ["derive"] }
 bincode = "1.3"
+rayon = "1.8"
 syn = { version = "2", features = ["full", "visit"] }
 proc-macro2 = "1"

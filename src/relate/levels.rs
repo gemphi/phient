@@ -18,7 +18,6 @@
 //! docs/146): a chapter that has said a thousand things does not make what
 //! it never said impossible, only rare.
 
-use phiecs::Row;
 use super::counts::Tally;
 
 /// `scope:` prefixes a path component so a directory named `above` and the
@@ -76,6 +75,7 @@ pub use phiecs::scope::{nest, scopes, SCOPE};
 #[cfg(test)]
 mod tests {
     use super::*;
+    use phiecs::Row;
 
     fn row(a: &str, k: &str, o: &str) -> Row {
         Row::new(a, k, o)

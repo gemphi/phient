@@ -10,10 +10,13 @@
 //! and the number cannot be fudged by testing on what was trained. The
 //! stream is sliced in reading order into a curve; learning shows as the
 //! curve rising, and the condition of satisfaction (docs/170) is fixed in
-//! advance: beat twice the floor, and rise.
+//! advance: beat twice the floor, and rise. A held-out reading is scored
+//! by one [`Score`] for every model: rank and probability, nothing else.
 
 pub mod arena;
+pub mod score;
 pub use arena::{Arena, Reader};
+pub use score::Score;
 
 /// A study: predictions ticked in reading order, sliced into a curve.
 pub struct Study {

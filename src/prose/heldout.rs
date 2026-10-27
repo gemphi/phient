@@ -6,20 +6,7 @@
 
 use super::Knowing;
 
-#[derive(Default, Debug, Clone)]
-pub struct Score {
-    pub asked: usize,
-    pub top1: usize,
-    pub rr: f64,
-    pub nll: f64,
-}
-
-impl Score {
-    pub fn row(&self, name: &str) -> String {
-        let n = self.asked.max(1) as f64;
-        format!("| {name} | {} | {:.1}% | {:.3} | {:.1} |", self.asked, 100.0 * self.top1 as f64 / n, self.rr / n, (self.nll / n).exp())
-    }
-}
+pub use crate::study::Score;
 
 /// Every position of every held-out paragraph, from the third word on.
 pub fn score(k: &Knowing) -> Score {
@@ -36,10 +23,8 @@ pub fn score(k: &Knowing) -> Score {
                 rank = i + 1;
                 p = (ranked[i].1 - top).exp() / z;
             }
-            s.asked += 1;
-            s.top1 += (rank == 1) as usize;
-            s.rr += 1.0 / rank as f64;
-            s.nll -= p.max(1e-12).ln();
+            s.rank(Some(rank));
+            s.prob(-p.max(1e-12).ln());
         }
     }
     s

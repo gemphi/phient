@@ -6,7 +6,7 @@
 //!   (docs/91–97);
 //! - [`FnoWave`] — that operator read as a matched filter, forward and
 //!   backwards, through [`Wave`];
-//! - [`MirrorWave`] — the phase-conjugate mirror (`phical::conjugate`): the
+//! - [`MirrorWave`] — the phase-conjugate mirror (`phiton::conjugate`): the
 //!   hologram read backwards (docs/153).
 //!
 //! `phient::relate` re-exports every name here, so a caller that counts and
