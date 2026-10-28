@@ -24,6 +24,7 @@
 //! | [`baseline`] | the number to beat: interpolated Kneser-Ney over tokenized sentences |
 //! | [`code`] | Rust read by its own grammar into rows (docs/108, docs/124) |
 //! | [`lineup`] | the readers the arena scores: counts, concepts, the mirror, the operator, and the learner corrected by its error (docs/176, docs/203) |
+//! | [`scribe`] | the writing student (docs/181): the token `Memory` and the `MoldSet` of proven buildings, taught by phiclm's judge |
 //! | [`study`] | step-by-step learning measured honestly: predict first, learn after, one curve for every method (docs/172) |
 //!
 //! phiano holds the applications — students, games, personas, the binaries —
@@ -31,8 +32,14 @@
 
 pub mod baseline;
 pub mod code;
+pub mod eval;
 pub mod lineup;
+pub mod memory;
+pub mod metrics;
+pub mod net;
 pub mod operator;
 pub mod prose;
 pub mod relate;
+pub mod scribe;
 pub mod study;
+pub mod train;

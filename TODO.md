@@ -16,6 +16,7 @@ Paths are under `src/`. Diagrams: [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ## The match-not-else-if rule
 
+- [ ] scribe: `mold::of` is an if / else-if chain (scribe/mold.rs:30-38).
 - [ ] code: `role::of` is an if / else-if chain (code/bcpl/role.rs:14-24).
 - [ ] prose: the cost in `best_division` is an if / else-if chain (prose/strand/code.rs:63).
 - [ ] relate: `Table::add` is an if-let / else-if chain (relate/table.rs:33-37).
@@ -33,3 +34,11 @@ Paths are under `src/`. Diagrams: [ARCHITECTURE.md](ARCHITECTURE.md).
 - [ ] relate: the module doc says phiano names `RelationModel`, which now lives in `phient::operator` (relate/mod.rs:12).
 - [ ] lib.rs: says phiano "re-exports these three modules" while its table lists six (lib.rs:28).
 - [ ] study: the arena's lineup (`lineup`) now includes the error-driven learner (docs/203); the README's model list predates it.
+
+## Moved in (2026-10-28)
+
+- [x] train: phiano's training cluster (trainer, topdown, chunker, conception, sources, roles, core::grounding) is `train`, its 18 constants in `train::constants`; metrics (with `nonlinear`, `data` and the context kernel) is `metrics`; eval, memory, and the rest of `net` (reader, lm) came with them. phiano reads all of it from here.
+- [x] train: `kinds` came here too (docs/phiano/distribution), so `RoleDiscovery::offset`, `agreement` and `centroid` are `pub(crate)` again.
+- [x] train: `kinds`, `synthetic`, `curriculum`, `correction`, `envision`, `synthesis` and `lifelong` moved in from phiano; `eval::oscillator` too.
+- [ ] train: phiano's `lib.rs` keeps `pub use phient::train::trainer;` only for the read-only example `meaning` (`phiano::trainer::Trainer`).
+- [ ] train: the sources fetch definitions over HTTP (`train/sources/api`), so phient now depends on reqwest; a fetching source belongs with the apps if phient is to stay offline.

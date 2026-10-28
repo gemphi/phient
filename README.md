@@ -9,6 +9,11 @@ Phient is to Phient systems what ollama is to its models: the brain that knows w
 | `study` | the protocol: every next word predicted BEFORE it is told, sliced curves, `beats_floor`; and the **arena** — every model one table, the inventory the brain routes over |
 | `prose` | text as a tree of knowing: `Knowing` (learn, `learn_new`, `next`), curiosity (interest points at the unknown), families discovered not given, the quest that asks a teacher |
 | `relate` | the ledgers: `Tally`, levels, the `ScopeTree` cast, kin — counts as the contrast line and the bookkeeping, never the learning |
+| `eval` | the Evaluator: a text's semantic quality as coherence, novelty and resonance, weighted (`Evaluator::overall`); it was phiano's `eval` |
+| `memory` | the 16-layer interaction log (`Memo`): every interaction with its wave, by depth, consolidated by count; it was phiano's `memory` |
+| `metrics` | the measures: the perplexity harness, benchmarks, baselines, generalisation, forgetting, detection, with the non-linear readout and the context kernel; it was phiano's `metrics` |
+| `net` | the lexicon read as a function space: a facet's words as functions on the circle, joint training with write-back, nested role binding with the operator as cleanup (it was phiano's `phinet`) |
+| `train` | learning the lexicon (with, from phiano since, the relation kinds, synthetic data, curriculum, correction journal, unknown words, program synthesis and the lifelong coordinator): the trainer, the downward path, definitions as compositions, the grounding, the roles, the chunk store and the sources; it was phiano's `trainer`, `topdown`, `chunker`, `conception`, `sources`, `roles` and `core::grounding` |
 | `operator` | the relation operator read as waves (FNO forward, mirror backward) |
 | `code` | Rust and BCPL read by their own grammar into rows |
 | `baseline` | interpolated Kneser-Ney: the number to beat |
