@@ -6,7 +6,7 @@ Paths are under `src/`. Diagrams: [ARCHITECTURE.md](ARCHITECTURE.md).
 
 - [ ] lineup: the learner does not beat the smoothed trigram on held-out sentences (21.3% top-1, perplexity 101.2; trigram 24.8%, 84.7).
 - [ ] lineup: train it on more text than one book; try a wider block and more channels with more silence; full softmax for the last epochs.
-- [ ] lineup: phiano's `talk` and workshop still generate from counts; they should read the learner.
+- [x] lineup: phiano's `talk` and workshop read the learner now (2026-10-28).
 
 ## Correctness
 
@@ -40,5 +40,11 @@ Paths are under `src/`. Diagrams: [ARCHITECTURE.md](ARCHITECTURE.md).
 - [x] train: phiano's training cluster (trainer, topdown, chunker, conception, sources, roles, core::grounding) is `train`, its 18 constants in `train::constants`; metrics (with `nonlinear`, `data` and the context kernel) is `metrics`; eval, memory, and the rest of `net` (reader, lm) came with them. phiano reads all of it from here.
 - [x] train: `kinds` came here too (docs/phiano/distribution), so `RoleDiscovery::offset`, `agreement` and `centroid` are `pub(crate)` again.
 - [x] train: `kinds`, `synthetic`, `curriculum`, `correction`, `envision`, `synthesis` and `lifelong` moved in from phiano; `eval::oscillator` too.
+- [x] generate, reasoning: phiano's engine (phase B, docs/phiano/engine): `generate` with `learn`, `compose` and `constants` inside it, and `reasoning` with its `Chain`.
+- [x] reasoning left again, as its own crate: `philog`, the logic crate (2026-10-28).
+- [ ] Calculations belong in phical (the ruling of 2026-10-28): phient orchestrates and calls them. Surveyed: about 150 calculations, nine batches; the plan is [docs/phient/calculations](../../docs/phient/calculations/plan.md). Batch 1 done (2026-10-28).
+- [x] eval: `verdict.rs` capped the novelty angle at π instead of folding it; folded (`phical::circle::distance`), at the user's "Yes, fold it". 41 of 1,993 guide sentences on the Austen lexicon moved (docs/206).
+- [ ] generate: phiano's `lib.rs` keeps `pub use phient::generate::compose;` only for the read-only example `flow`.
+- [ ] generate: the only caller of phiecs's `Attention::next_words` is the dead `Generator::attention_pick` (generate/steer.rs:13-25); phiecs's `attention/cross.rs` is never declared.
 - [ ] train: phiano's `lib.rs` keeps `pub use phient::train::trainer;` only for the read-only example `meaning` (`phiano::trainer::Trainer`).
 - [ ] train: the sources fetch definitions over HTTP (`train/sources/api`), so phient now depends on reqwest; a fetching source belongs with the apps if phient is to stay offline.

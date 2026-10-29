@@ -1,10 +1,8 @@
 //! Learned heuristics: uses facet phases to guide program synthesis search.
 //! Deep learning guides the discrete program search (Ch 14.5).
 
-use phiton::units::TWO_PI;
 use phiecs::phasor::facet::Facet;
 use phiton::p64::words::Tokenizer;
-use std::f64::consts::PI;
 
 #[derive(Debug, Default)]
 pub struct SynthesisHeuristic;
@@ -21,10 +19,7 @@ impl SynthesisHeuristic {
             let input_phase = Self::mean_phase(facet, &input_tokens);
             let output_phase = Self::mean_phase(facet, &output_tokens);
 
-            let mut delta = (output_phase - input_phase).abs();
-            if delta > PI {
-                delta = TWO_PI - delta;
-            }
+            let delta = phical::circle::distance(output_phase, input_phase);
 
             heuristics.push(delta);
         }
@@ -67,20 +62,17 @@ impl SynthesisHeuristic {
     }
 
     fn mean_phase(facet: &Facet, tokens: &[String]) -> f64 {
-        let mut sum_x = 0.0;
-        let mut sum_y = 0.0;
+        let mut r = phical::circle::Resultant::new();
         let mut count = 0;
         for token in tokens {
             if let Some(p) = facet.lexicon.get(token) {
-                sum_x += p.amplitude * p.phase.cos();
-                sum_y += p.amplitude * p.phase.sin();
+                r.add(p.amplitude, p.phase);
                 count += 1;
             }
         }
-        if count == 0 {
-            return 0.0;
+        match count {
+            0 => 0.0,
+            _ => r.direction_lifted(),
         }
-        let phase = sum_y.atan2(sum_x);
-        if phase < 0.0 { phase + TWO_PI } else { phase }
     }
 }

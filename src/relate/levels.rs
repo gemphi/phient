@@ -59,8 +59,8 @@ impl Tally {
             }
             if moved {
                 let top = s.iter().cloned().fold(f64::MIN, f64::max);
-                let z: f64 = s.iter().map(|x| (x - top).exp()).sum();
-                base = s.iter().map(|x| (x - top).exp() / z).collect();
+                let z = phistd::prob::softmax_z(s.iter().copied(), top, 1.0);
+                base = s.iter().map(|x| phistd::prob::softmax_p(*x, top, 1.0, z)).collect();
             }
         }
         (base.iter().map(|p| p.max(1e-300).ln()).collect(), posts)

@@ -21,7 +21,7 @@ fn test_anchor_bounds_drift_and_is_inert_at_zero() {
         );
         (0..PHASE_CHANNELS)
             .map(|k| {
-                Conception::delta(start.lexicon["cat"].theta(k), f.lexicon["cat"].theta(k))
+                phical::circle::delta(start.lexicon["cat"].theta(k), f.lexicon["cat"].theta(k))
                     .abs()
             })
             .sum::<f64>()

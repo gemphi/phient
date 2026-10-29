@@ -77,7 +77,7 @@ impl RelationBenchmark {
         );
         let mut q = *pc;
         for k in 0..SpectralPhasor::channels() {
-            q.set_theta(k, pc.theta(k) + pb.theta(k) - pa.theta(k));
+            q.set_theta(k, phical::circle::analogy(pa.theta(k), pb.theta(k), pc.theta(k)));
         }
         q.sync_phase();
         Some(q)

@@ -17,11 +17,11 @@ pub fn score(k: &Knowing) -> Score {
             let truth = &words[i];
             // The scores are logs; normalised over the values for a probability.
             let top = ranked.first().map_or(0.0, |x| x.1);
-            let z: f64 = ranked.iter().map(|x| (x.1 - top).exp()).sum();
+            let z = phistd::prob::softmax_z(ranked.iter().map(|x| x.1), top, 1.0);
             let (mut rank, mut p) = (ranked.len() + 1, 1e-6 / ranked.len().max(1) as f64);
             if let Some(i) = ranked.iter().position(|x| x.0 == *truth) {
                 rank = i + 1;
-                p = (ranked[i].1 - top).exp() / z;
+                p = phistd::prob::softmax_p(ranked[i].1, top, 1.0, z);
             }
             s.rank(Some(rank));
             s.prob(-p.max(1e-12).ln());
@@ -34,6 +34,6 @@ pub fn score(k: &Knowing) -> Score {
 pub fn held(share: f64, seed: u64) -> impl Fn(&str) -> bool {
     move |path: &str| {
         let h = phistd::mix64(phistd::fnv1a(path) ^ seed);
-        ((h >> 11) as f64 / (1u64 << 53) as f64) < share
+        phistd::random::unit_interval(h) < share
     }
 }

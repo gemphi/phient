@@ -60,13 +60,11 @@ impl MetaLearner {
         MetaModel { prior, adaptation_rates, n_tasks: tasks.len() }
     }
 
-    /// Mean direction of a set of angles. Averaging angles numerically is wrong
-    /// on a circle; averaging their unit vectors is not.
+    /// Mean direction of a set of angles, in [0, 2π): phical's
+    /// [`phical::circle::mean`]. Averaging angles numerically is wrong on a
+    /// circle; averaging their unit vectors is not.
     pub fn circular_mean(phases: &[f64]) -> f64 {
-        let (x, y) = phases
-            .iter()
-            .fold((0.0f64, 0.0f64), |(a, b), p| (a + p.cos(), b + p.sin()));
-        y.atan2(x).rem_euclid(phiton::units::TWO_PI)
+        phical::circle::mean(phases)
     }
 }
 

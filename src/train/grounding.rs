@@ -36,10 +36,8 @@ use centroid::*;
 use crate::train::chunker::ChunkStore;
 use crate::train::conception::Conception;
 use crate::train::constants::GROUNDING_ROUNDS;
-use phiton::units::TWO_PI;
 use phiecs::phasor::facet::Facet;
 use phiton::p64::words::Tokenizer;
-use std::f64::consts::PI;
 
 /// Any source that can describe a symbol in terms of other symbols.
 ///

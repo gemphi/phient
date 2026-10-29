@@ -140,13 +140,7 @@ impl DefinitionGrounder {
             for (word, target) in &updates {
                 if let Some(phasor) = facet.lexicon.get_mut(word) {
                     let current = phasor.theta(0);
-                    let mut diff = target - current;
-                    if diff > PI {
-                        diff -= TWO_PI;
-                    }
-                    if diff < -PI {
-                        diff += TWO_PI;
-                    }
+                    let diff = phical::circle::delta(current, *target);
                     phasor.set_theta(0, current + 0.5 * diff);
                     phasor.sync_phase();
                     total_shift += (0.5 * diff).abs();

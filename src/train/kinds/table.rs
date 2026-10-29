@@ -1,5 +1,6 @@
 #[allow(unused_imports)]
 use super::*;
+use phical::circle::{self, Resultant};
 
 impl OffsetTable {
     pub fn len(&self) -> usize {
@@ -30,28 +31,24 @@ impl OffsetTable {
 
         // Circular means, accumulated as unit vectors. A mean of angles is the
         // argument of the sum of their unit vectors, not the mean of the angles.
-        let mut head_acc: HashMap<&str, Vec<c64>> = HashMap::new();
-        let mut filler_acc: HashMap<&str, Vec<c64>> = HashMap::new();
-        let mut grand = vec![c64::new(0.0, 0.0); PHASE_CHANNELS];
-        let zeros = || vec![c64::new(0.0, 0.0); PHASE_CHANNELS];
+        let mut head_acc: HashMap<&str, Vec<Resultant>> = HashMap::new();
+        let mut filler_acc: HashMap<&str, Vec<Resultant>> = HashMap::new();
+        let mut grand = vec![Resultant::new(); PHASE_CHANNELS];
+        let zeros = || vec![Resultant::new(); PHASE_CHANNELS];
 
         for (p, o) in kept.iter().zip(raw.iter()) {
             let h = head_acc.entry(p.0.as_str()).or_insert_with(zeros);
             for k in 0..PHASE_CHANNELS {
-                let z = c64::from_polar(1.0, o[k]);
-                h[k] += z;
-                grand[k] += z;
+                h[k].add_unit(o[k]);
+                grand[k].add_unit(o[k]);
             }
             let f = filler_acc.entry(p.1.as_str()).or_insert_with(zeros);
             for k in 0..PHASE_CHANNELS {
-                f[k] += c64::from_polar(1.0, o[k]);
+                f[k].add_unit(o[k]);
             }
         }
 
-        let arg_or_zero = |z: c64| match z.norm() > 1e-12 {
-            true => z.arg(),
-            false => 0.0,
-        };
+        let arg_or_zero = |r: Resultant| r.direction_or_none().unwrap_or(0.0);
 
         let offsets: Vec<Vec<f64>> = kept
             .iter()
@@ -60,16 +57,15 @@ impl OffsetTable {
                 let h = &head_acc[p.0.as_str()];
                 let f = &filler_acc[p.1.as_str()];
                 (0..PHASE_CHANNELS)
-                    .map(|k| {
-                        let centered = match est {
-                            OffsetEstimator::Raw => o[k],
-                            OffsetEstimator::HeadCentered => o[k] - arg_or_zero(h[k]),
-                            OffsetEstimator::DoubleCentered => {
-                                o[k] - arg_or_zero(h[k]) - arg_or_zero(f[k])
-                                    + arg_or_zero(grand[k])
-                            }
-                        };
-                        centered.rem_euclid(phiton::units::TWO_PI)
+                    .map(|k| match est {
+                        OffsetEstimator::Raw => circle::reduce(o[k]),
+                        OffsetEstimator::HeadCentered => circle::centred(o[k], arg_or_zero(h[k])),
+                        OffsetEstimator::DoubleCentered => circle::double_centred(
+                            o[k],
+                            arg_or_zero(h[k]),
+                            arg_or_zero(f[k]),
+                            arg_or_zero(grand[k]),
+                        ),
                     })
                     .collect()
             })
@@ -118,11 +114,11 @@ impl OffsetTable {
             return Self { pairs: kept, offsets: raw };
         }
 
-        let mut acc: HashMap<u16, Vec<c64>> = HashMap::new();
+        let mut acc: HashMap<u16, Vec<Resultant>> = HashMap::new();
         for (c, o) in cls.iter().zip(raw.iter()) {
-            let e = acc.entry(*c).or_insert_with(|| vec![c64::new(0.0, 0.0); PHASE_CHANNELS]);
+            let e = acc.entry(*c).or_insert_with(|| vec![Resultant::new(); PHASE_CHANNELS]);
             for k in 0..PHASE_CHANNELS {
-                e[k] += c64::from_polar(1.0, o[k]);
+                e[k].add_unit(o[k]);
             }
         }
 
@@ -132,13 +128,7 @@ impl OffsetTable {
             .map(|(o, c)| {
                 let m = &acc[c];
                 (0..PHASE_CHANNELS)
-                    .map(|k| {
-                        let shift = match m[k].norm() > 1e-12 {
-                            true => m[k].arg(),
-                            false => 0.0,
-                        };
-                        (o[k] - shift).rem_euclid(phiton::units::TWO_PI)
-                    })
+                    .map(|k| circle::centred(o[k], m[k].direction_or_none().unwrap_or(0.0)))
                     .collect()
             })
             .collect();
@@ -151,19 +141,6 @@ impl OffsetTable {
     /// Nothing is fitted, so every pair is held out and the comparison across
     /// context sources is a comparison of the contexts alone.
     pub fn harmonic_agreement(&self) -> f64 {
-        let basis = KindTable::harmonic();
-        let (mut sum, mut n) = (0.0f64, 0usize);
-        for i in 0..self.len() {
-            if let Some((_, a)) = self.best_match(i, &basis.rotations) {
-                if a.is_finite() {
-                    sum += a;
-                    n += 1;
-                }
-            }
-        }
-        match n {
-            0 => 0.0,
-            _ => sum / n as f64,
-        }
+        circle::mean_nearest(&self.offsets, &KindTable::harmonic().rotations)
     }
 }

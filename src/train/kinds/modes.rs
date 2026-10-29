@@ -54,12 +54,7 @@ impl OffsetTable {
 
     /// Nearest centroid and its agreement, for a pair already in the table.
     pub(super) fn best_match(&self, index: usize, rotations: &[Vec<f64>]) -> Option<(usize, f64)> {
-        let off = self.offsets.get(index)?;
-        rotations
-            .iter()
-            .enumerate()
-            .map(|(i, r)| (i, RoleDiscovery::agreement(off, r)))
-            .max_by(|a, b| a.1.partial_cmp(&b.1).unwrap_or(std::cmp::Ordering::Equal))
+        phical::circle::nearest(self.offsets.get(index)?, rotations)
     }
 }
 

@@ -60,18 +60,17 @@ impl FeatureReuse {
 
     /// Circular centroid of a group of words on channel 0.
     fn centroid(facet: &Facet, words: &[String]) -> Option<f64> {
-        let (mut x, mut y) = (0.0f64, 0.0f64);
+        let mut r = phical::circle::Resultant::new();
         let mut n = 0;
         for w in words {
             if let Some(p) = facet.lexicon.get(w) {
-                x += p.theta(0).cos() * p.amplitude;
-                y += p.theta(0).sin() * p.amplitude;
+                r.add(p.amplitude, p.theta(0));
                 n += 1;
             }
         }
         match n {
             0 => None,
-            _ => Some(y.atan2(x)),
+            _ => Some(r.direction()),
         }
     }
 
@@ -134,16 +133,7 @@ impl FeatureReuse {
 
     /// Shape similarity between two feature sets, independent of where they sit.
     pub fn similarity(a: &FeatureSet, b: &FeatureSet) -> f64 {
-        if a.offsets.is_empty() || b.offsets.is_empty() {
-            return 0.0;
-        }
-        let (mut x, mut y) = (a.offsets.clone(), b.offsets.clone());
-        x.sort_by(|p, q| p.partial_cmp(q).unwrap_or(std::cmp::Ordering::Equal));
-        y.sort_by(|p, q| p.partial_cmp(q).unwrap_or(std::cmp::Ordering::Equal));
-
-        let n = x.len().min(y.len());
-        let total: f64 = (0..n).map(|i| (x[i] - y[i]).cos()).sum();
-        (total / n as f64).clamp(-1.0, 1.0)
+        phical::circle::shape_similarity(&a.offsets, &b.offsets)
     }
 }
 

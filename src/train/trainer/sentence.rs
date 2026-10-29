@@ -1,5 +1,6 @@
 #[allow(unused_imports)]
 use super::*;
+use phical::circle::Resultant;
 
 impl Trainer {
 
@@ -36,16 +37,13 @@ impl Trainer {
         // vocabulary into one cluster.
         let mut targets = vec![0.0f64; channels.len()];
         for (ci, &k) in channels.iter().enumerate() {
-            let (mut sx, mut sy) = (0.0f64, 0.0f64);
+            let mut centroid = Resultant::new();
             for t in &tokens {
                 if let Some(p) = facet.lexicon.get(t) {
-                    let w = p.amplitude * Self::token_weight(t);
-                    let th = p.theta(k);
-                    sx += w * th.cos();
-                    sy += w * th.sin();
+                    centroid.add(p.amplitude * Self::token_weight(t), p.theta(k));
                 }
             }
-            targets[ci] = sy.atan2(sx);
+            targets[ci] = centroid.direction();
         }
 
         // Channel-0 snapshot for the asymmetric syntactic term.

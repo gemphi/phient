@@ -89,10 +89,7 @@ impl<'a> PhianoLM<'a> {
                 n += 1;
             }
         }
-        match n {
-            0 => f64::INFINITY,
-            _ => (-log_sum / n as f64).exp(),
-        }
+        phistd::prob::perplexity(log_sum, n)
     }
 
     /// Perplexity at an explicit context construction.
@@ -152,10 +149,7 @@ impl<'a> PhianoLM<'a> {
             })
             .reduce(|| (0.0f64, 0usize), |a, b| (a.0 + b.0, a.1 + b.1));
 
-        match n {
-            0 => f64::INFINITY,
-            _ => (-log_sum / n as f64).exp(),
-        }
+        phistd::prob::perplexity(log_sum, n)
     }
 
     /// Recurrent context state, per channel, over a sentence prefix.

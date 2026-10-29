@@ -18,21 +18,13 @@ pub struct Memory {
 
 /// A deterministic coin.
 pub fn coin(state: &mut u64) -> f64 {
-    *state = state.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
-    (*state >> 11) as f64 / (1u64 << 53) as f64
+    phistd::random::unit_interval(phistd::random::lcg(state))
 }
 
 /// A weighted draw.
 pub fn draw(choice: &[(&String, u32)], rng: &mut u64) -> String {
-    let total: u32 = choice.iter().map(|(_, n)| n).sum();
-    let mut pick = (coin(rng) * total as f64) as u32;
-    for (w, n) in choice {
-        if pick < *n {
-            return (*w).clone();
-        }
-        pick -= n;
-    }
-    choice.last().expect("non-empty").0.clone()
+    let weights: Vec<u32> = choice.iter().map(|(_, n)| *n).collect();
+    choice[phistd::random::draw_by_weight(&weights, coin(rng))].0.clone()
 }
 
 impl Memory {

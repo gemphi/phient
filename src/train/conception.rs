@@ -44,11 +44,10 @@ use graph::*;
 use counts::*;
 
 use phistd::GOLDEN_ANGLE;
-use phiton::units::{PHASE_CHANNELS, TWO_PI};
+use phiton::units::PHASE_CHANNELS;
 use phiecs::phasor::facet::Facet;
 use phiton::p64::words::Tokenizer;
 use std::collections::HashMap;
-use std::f64::consts::PI;
 
 /// How far the headword moves toward its composed definition each round.
 pub const HEAD_STEP: f64 = 0.5;

@@ -90,7 +90,7 @@ impl SentenceBenchmark {
 
         let lexical: Vec<usize> = per_item.iter().map(|(_, l)| *l).collect();
 
-        let chance_mrr = (1..=CANDIDATES).map(|r| 1.0 / r as f64).sum::<f64>() / CANDIDATES as f64;
+        let chance_mrr = phical::relate::chance(CANDIDATES);
 
         SentenceReport {
             items: items.len(),

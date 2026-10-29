@@ -12,7 +12,7 @@
 //!   `q = Hⁿ a_w`, the kind an all-pass filter, read backwards by `H̄`.
 
 use super::model::{kind_token, RelationModel};
-use phical::{c64, normalise, Function};
+use phical::{c64, Function};
 
 /// A reader whose answers are complex matched filters over `values`.
 pub trait Wave {
@@ -55,11 +55,7 @@ impl<'a> FnoWave<'a> {
         let inputs: Vec<Function> = (0..self.table.len())
             .filter(|&i| !self.m.names[i].starts_with('⟨'))
             .take(n)
-            .map(|w| {
-                let mut x: Function = self.table[w].iter().zip(&self.table[k]).map(|(p, q)| p + q).collect();
-                normalise(&mut x);
-                x
-            })
+            .map(|w| phical::relate::context(&self.table, w, k))
             .collect();
         Some(self.m.joint.fno.defects(&inputs, 1.0))
     }

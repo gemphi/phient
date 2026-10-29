@@ -184,7 +184,7 @@ impl Learner {
     }
 
     fn chance(&mut self) -> f32 {
-        (self.next_random() >> 40) as f32 / (1u64 << 24) as f32
+        phistd::random::unit_interval_f32(self.next_random())
     }
 
     /// The table a candidate is read from.

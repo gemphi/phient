@@ -126,10 +126,8 @@ impl<'a> PhianoLM<'a> {
                         }
                     },
                 };
-                // xorshift64*, so the negative sample is deterministic per run.
-                rng ^= rng << 13;
-                rng ^= rng >> 7;
-                rng ^= rng << 17;
+                // xorshift64, so the negative sample is deterministic per run.
+                rng = phistd::random::xorshift64(rng);
                 let neg = (rng % v as u64) as usize;
 
                 let key = table.key(&Self::ctx_angles(&ctx));

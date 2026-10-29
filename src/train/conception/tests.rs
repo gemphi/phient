@@ -127,7 +127,7 @@ fn test_strong_pairs_move_further_than_weak() {
 
     let shift = |a: &Facet, b: &Facet, w: &str| {
         (0..PHASE_CHANNELS)
-            .map(|k| Conception::delta(a.lexicon[w].theta(k), b.lexicon[w].theta(k)).abs())
+            .map(|k| phical::circle::delta(a.lexicon[w].theta(k), b.lexicon[w].theta(k)).abs())
             .sum::<f64>()
     };
 

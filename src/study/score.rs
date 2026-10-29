@@ -63,7 +63,7 @@ impl Score {
 
     /// Perplexity over the positions that carried a probability.
     pub fn perplexity(&self) -> f64 {
-        (self.nll / self.known.max(1) as f64).exp()
+        phistd::prob::perplexity_of_nll(self.nll, self.known)
     }
 
     /// `| name | asked | top-1 | MRR | perplexity |`, the held-out table row.

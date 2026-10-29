@@ -20,9 +20,11 @@
 //! cosine and the operator cannot win by scaling.
 
 mod encode;
+mod sector;
 #[cfg(test)]
 mod tests;
 pub use encode::*;
+pub use sector::{lexicon_mean, relational_sector};
 
 use phiton::units::PHASE_CHANNELS;
 use phiecs::phasor::facet::Facet;

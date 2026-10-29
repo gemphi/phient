@@ -43,7 +43,7 @@ impl RoleTable {
             return None;
         }
 
-        let mut acc = vec![(0.0f64, 0.0f64); PHASE_CHANNELS];
+        let mut acc = vec![phical::circle::Resultant::new(); PHASE_CHANNELS];
         let mut used = 0usize;
         for r in mine {
             let p = match facet.lexicon.get(&r.filler) {
@@ -53,9 +53,7 @@ impl RoleTable {
             used += 1;
             let bound = Self::bind(p, r.role);
             for (k, a) in acc.iter_mut().enumerate() {
-                let t = bound.theta(k);
-                a.0 += t.cos();
-                a.1 += t.sin();
+                a.add_unit(bound.theta(k));
             }
         }
         if used == 0 {
@@ -63,9 +61,9 @@ impl RoleTable {
         }
 
         let mut out = SpectralPhasor::seeded(head, 1.0, 1);
-        for (k, (x, y)) in acc.iter().enumerate() {
-            if x.hypot(*y) > 1e-12 {
-                out.set_theta(k, y.atan2(*x));
+        for (k, a) in acc.iter().enumerate() {
+            if let Some(direction) = a.direction_or_none() {
+                out.set_theta(k, direction);
             }
         }
         out.sync_phase();

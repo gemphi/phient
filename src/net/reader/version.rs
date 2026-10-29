@@ -108,17 +108,12 @@ pub fn inspect(path: &str) -> (ModelReport, Option<Facet>) {
 
 /// Dispersion of channel `k` over every word, evidence or not.
 pub(super) fn dispersion_all(facet: &Facet, k: usize) -> f64 {
-    let (mut x, mut y, mut n) = (0.0f64, 0.0f64, 0usize);
+    let (mut r, mut n) = (phical::circle::Resultant::new(), 0usize);
     for p in facet.lexicon.values() {
-        let t = p.theta(k);
-        x += t.cos();
-        y += t.sin();
+        r.add_unit(p.theta(k));
         n += 1;
     }
-    match n {
-        0 => 1.0,
-        _ => 1.0 - x.hypot(y) / n as f64,
-    }
+    r.dispersion(n)
 }
 
 impl ModelReport {

@@ -66,12 +66,9 @@ impl<'a> PhianoLM<'a> {
                     };
 
                     for (bi, beta) in betas.iter().enumerate() {
-                        let mut z = 0.0;
-                        for s in score_buf.iter() {
-                            z += (beta * (s - max)).exp();
-                        }
+                        let z = phistd::prob::softmax_z(score_buf.iter().copied(), max, *beta);
                         let p_ph = match z > 0.0 {
-                            true => ((beta * (score_buf[idx] - max)).exp() / z).max(floor),
+                            true => phistd::prob::softmax_p(score_buf[idx], max, *beta, z).max(floor),
                             false => p_uni,
                         };
                         for (gi, g) in GAMMA_GRID.iter().enumerate() {
@@ -110,10 +107,7 @@ impl<'a> PhianoLM<'a> {
                     context: label.clone(),
                     beta: *beta,
                     gamma: *g,
-                    ppl: match n {
-                        0 => f64::INFINITY,
-                        _ => (-sums[bi * ng + gi] / n as f64).exp(),
-                    },
+                    ppl: phistd::prob::perplexity(sums[bi * ng + gi], n),
                 });
             }
         }

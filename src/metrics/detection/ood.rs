@@ -1,7 +1,7 @@
 //! Out-of-distribution detection: flags inputs far from training distribution.
 
-use phiton::units::TWO_PI;
 use crate::metrics::data::preprocess::Preprocessor;
+use phical::circle::Resultant;
 use phiecs::phasor::facet::Facet;
 use phiton::p64::words::Tokenizer;
 use std::f64::consts::PI;
@@ -22,21 +22,16 @@ impl OodDetector {
             return 1.0;
         }
 
-        let (prompt_x, prompt_y) = Preprocessor::sentence_to_wave(facet, prompt);
-        let prompt_phase = prompt_y.atan2(prompt_x).rem_euclid(TWO_PI);
+        let (x, y) = Preprocessor::sentence_to_wave(facet, prompt);
+        let prompt_phase = Resultant { x, y }.direction_euclid();
 
-        let mut centroid_x = 0.0;
-        let mut centroid_y = 0.0;
+        let mut centroid = Resultant::new();
         for phasor in facet.lexicon.values() {
-            centroid_x += phasor.amplitude * phasor.phase.cos();
-            centroid_y += phasor.amplitude * phasor.phase.sin();
+            centroid.add(phasor.amplitude, phasor.phase);
         }
-        let centroid_phase = centroid_y.atan2(centroid_x).rem_euclid(TWO_PI);
+        let centroid_phase = centroid.direction_euclid();
 
-        let mut diff = (prompt_phase - centroid_phase).abs();
-        if diff > PI {
-            diff = TWO_PI - diff;
-        }
+        let diff = phical::circle::distance(prompt_phase, centroid_phase);
 
         diff / PI
     }

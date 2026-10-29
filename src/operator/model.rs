@@ -121,8 +121,7 @@ impl RelationModel {
     /// As `output`, by row, against a copy of the table already taken
     /// (`joint.functions()` copies it, so a reader of many rows takes it once).
     pub fn output_at(&mut self, table: &[Function], word: usize, kind: usize) -> Function {
-        let mut x: Function = table[word].iter().zip(&table[kind]).map(|(p, q)| p + q).collect();
-        phistd::normalise(&mut x);
+        let x = phical::relate::context(table, word, kind);
         self.joint.fno.apply(&[x]).remove(0)
     }
 

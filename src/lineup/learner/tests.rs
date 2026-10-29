@@ -105,3 +105,38 @@ fn the_same_seed_learns_the_same_thing() {
     };
     assert_eq!(run(), run());
 }
+
+/// The English guide's sentences, cut as `talk` and the learner example cut
+/// them; `None` when the guide is not beside the workspace.
+fn guide(n: usize) -> Option<Vec<Vec<String>>> {
+    let path = concat!(env!("CARGO_MANIFEST_DIR"), "/../phiano/data/person/murphy.txt");
+    let text = std::fs::read_to_string(path).ok()?;
+    let cut = |w: Vec<String>| w.into_iter().filter(|t| t.chars().any(char::is_alphanumeric)).collect::<Vec<_>>();
+    Some(text.split(['.', '!', '?', '\n']).map(crate::prose::tokens).map(cut).filter(|w| w.len() >= 4).take(n).collect())
+}
+
+/// The learner's numbers on the guide, pinned before its math moved to phical
+/// (batch 4 of docs/phient/calculations): told the guide's first 600
+/// sentences and trained two epochs, the bits of each epoch's mean loss and a
+/// fingerprint of every score it gives on the next 40 sentences' prefixes must
+/// not change. (`measure` reduces in parallel, so its sums are not pinned.)
+#[test]
+fn the_numbers_on_the_guide_do_not_move() {
+    let Some(lines) = guide(640) else { return };
+    let mut l = Learner::new(Config { channels: 16, context: 4, block: 4, negatives: 16, rate: 0.5, epochs: 2, dropout: 0.1, silence: 0.2, ..Config::default() });
+    for s in &lines[..600] {
+        l.tell(s);
+    }
+    let losses: Vec<u64> = (0..2).map(|_| l.epoch().to_bits()).collect();
+    let mut print = 0u64;
+    for s in &lines[600..] {
+        for j in 1..s.len() {
+            let (scores, end) = l.scores(&s[..j]);
+            for x in scores.iter().chain([&end]) {
+                print = phistd::mix64(print ^ x.to_bits() as u64);
+            }
+        }
+    }
+    // Pinned 2026-10-29 from the code before batch 4.
+    assert_eq!((losses, print), (vec![4612860791556017263u64, 4611911870419914518u64], 0x12fcdbd401d3768cu64));
+}

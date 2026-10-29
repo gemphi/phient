@@ -106,15 +106,7 @@ impl MoldSet {
 
     /// A building drawn by weight.
     fn pick(&self, rng: &mut u64) -> usize {
-        let total: u32 = self.weight.iter().sum();
-        let mut at = (coin(rng) * total as f64) as u32;
-        for (i, w) in self.weight.iter().enumerate() {
-            if at < *w {
-                return i;
-            }
-            at -= w;
-        }
-        self.mold.len() - 1
+        phistd::random::draw_by_weight(&self.weight, coin(rng))
     }
 
     /// One program written from the molds: a proven building drawn by

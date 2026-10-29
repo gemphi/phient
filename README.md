@@ -12,8 +12,9 @@ Phient is to Phient systems what ollama is to its models: the brain that knows w
 | `eval` | the Evaluator: a text's semantic quality as coherence, novelty and resonance, weighted (`Evaluator::overall`); it was phiano's `eval` |
 | `memory` | the 16-layer interaction log (`Memo`): every interaction with its wave, by depth, consolidated by count; it was phiano's `memory` |
 | `metrics` | the measures: the perplexity harness, benchmarks, baselines, generalisation, forgetting, detection, with the non-linear readout and the context kernel; it was phiano's `metrics` |
-| `net` | the lexicon read as a function space: a facet's words as functions on the circle, joint training with write-back, nested role binding with the operator as cleanup (it was phiano's `phinet`) |
+| `net` | the lexicon read as a function space: a facet's words as functions on the circle, joint training with write-back, nested role binding with the operator as cleanup, a word's sector against the lexicon mean (`space::sector`, from phiano's persona fingerprint) (it was phiano's `phinet`) |
 | `train` | learning the lexicon (with, from phiano since, the relation kinds, synthetic data, curriculum, correction journal, unknown words, program synthesis and the lifelong coordinator): the trainer, the downward path, definitions as compositions, the grounding, the roles, the chunk store and the sources; it was phiano's `trainer`, `topdown`, `chunker`, `conception`, `sources`, `roles` and `core::grounding` |
+| `generate` | the generation engine: the decoders, the beam, the context wave, the operator guide, the persona prior (a sector histogram), with `learn` (the generator's log-linear scorer and its tuner) and `compose` (better/worse composition, the river flow) inside it; it was phiano's `generate`, `learn` and `compose` |
 | `operator` | the relation operator read as waves (FNO forward, mirror backward) |
 | `code` | Rust and BCPL read by their own grammar into rows |
 | `baseline` | interpolated Kneser-Ney: the number to beat |

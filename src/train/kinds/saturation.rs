@@ -137,20 +137,7 @@ impl KindTable {
         // not be held out either — this is the honest middle: the estimator is a
         // property of the set it is applied to, and the two sets are disjoint.
         let held_table = OffsetTable::build(facet, held, est);
-        let mut sum = 0.0;
-        let mut n = 0usize;
-        for i in 0..held_table.len() {
-            if let Some((_, a)) = held_table.best_match(i, &rotations) {
-                if a.is_finite() {
-                    sum += a;
-                    n += 1;
-                }
-            }
-        }
-        match n {
-            0 => 0.0,
-            _ => sum / n as f64,
-        }
+        phical::circle::mean_nearest(&held_table.offsets, &rotations)
     }
 }
 

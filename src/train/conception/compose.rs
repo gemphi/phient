@@ -123,12 +123,12 @@ impl Conception {
                             continue;
                         }
                         let cur = p.theta(k);
-                        let mut step = rate * Self::delta(cur, target[k]);
+                        let mut step = rate * phical::circle::delta(cur, target[k]);
                         // Retrofitting's first term: a pull back toward where
                         // training put this word, competing with the pull toward
                         // its definers.
                         if let Some(o) = anchor_at {
-                            step += rate * anchor * Self::delta(cur, o[k]);
+                            step += rate * anchor * phical::circle::delta(cur, o[k]);
                         }
                         p.set_theta(k, cur + step);
                         shift_sum += step.abs();
@@ -158,7 +158,7 @@ impl Conception {
                         // word pulled only by weak pairs moves less than one
                         // pulled by strong ones.
                         let scale = (x.hypot(y) / count.max(1.0)).min(1.0);
-                        let step = head_step * scale * Self::delta(cur, y.atan2(x));
+                        let step = head_step * scale * phical::circle::delta(cur, y.atan2(x));
                         p.set_theta(k, cur + step);
                     }
                     p.sync_phase();

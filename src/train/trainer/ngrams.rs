@@ -89,15 +89,13 @@ impl Trainer {
     /// Computes the amplitude-weighted centroid phase across all tokens
     /// (channel 0), down-weighting closed-class words.
     pub(super) fn compute_centroid_phase(&self, facet: &Facet, tokens: &[String]) -> f64 {
-        let (mut sum_x, mut sum_y) = (0.0f64, 0.0f64);
+        let mut centroid = phical::circle::Resultant::new();
         for token in tokens {
             if let Some(phasor) = facet.lexicon.get(token) {
-                let w = phasor.amplitude * Self::token_weight(token);
-                sum_x += phasor.theta(0).cos() * w;
-                sum_y += phasor.theta(0).sin() * w;
+                centroid.add(phasor.amplitude * Self::token_weight(token), phasor.theta(0));
             }
         }
-        sum_y.atan2(sum_x)
+        centroid.direction()
     }
 
     /// Trains on a single sentence in online mode (single pass).

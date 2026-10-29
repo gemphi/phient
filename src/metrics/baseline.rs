@@ -54,11 +54,7 @@ impl BaselineScore {
     /// available reference; the share of that gap the phase distribution closes
     /// is a scale-free measure of what the representation knows.
     pub fn phase_signal_recovered(&self) -> f64 {
-        let denom = self.uniform_ppl.ln() - self.unigram_ppl.ln();
-        match denom.abs() < 1e-9 {
-            true => 0.0,
-            false => (self.uniform_ppl.ln() - self.phiano_phase_ppl.ln()) / denom,
-        }
+        phistd::stats::log_share(self.uniform_ppl, self.unigram_ppl, self.phiano_phase_ppl).unwrap_or(0.0)
     }
 }
 
@@ -105,10 +101,7 @@ impl BaselineSet {
                 n += 1;
             }
         }
-        match n {
-            0 => f64::INFINITY,
-            _ => (-log_sum / n as f64).exp(),
-        }
+        phistd::prob::perplexity(log_sum, n)
     }
 
     /// Scores every baseline against a held-out split.

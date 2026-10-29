@@ -1,5 +1,6 @@
 #[allow(unused_imports)]
 use super::*;
+use phical::circle::Resultant;
 
 /// Words too common to carry the meaning of an entry.
 ///
@@ -45,7 +46,7 @@ impl Conception {
             .filter(|w| !is_structural(w))
             .collect();
 
-        let mut acc = vec![(0.0f64, 0.0f64); PHASE_CHANNELS];
+        let mut acc = vec![Resultant::new(); PHASE_CHANNELS];
         let mut used = 0usize;
 
         for (i, w) in tokens.iter().enumerate() {
@@ -63,9 +64,7 @@ impl Conception {
             // hapax typos dominate an entry.
             let m = p.amplitude.max(1e-6);
             for (k, slot) in acc.iter_mut().enumerate() {
-                let t = p.theta(k) + roll;
-                slot.0 += m * t.cos();
-                slot.1 += m * t.sin();
+                slot.add(m, p.theta(k) + roll);
             }
         }
 
@@ -73,30 +72,10 @@ impl Conception {
             return None;
         }
 
-        Some(
-            acc.iter()
-                .map(|(x, y)| match x.hypot(*y) > 1e-12 {
-                    true => y.atan2(*x),
-                    // A channel whose definers cancelled exactly carries no
-                    // information; leaving it at 0 would be a claim, so it is
-                    // flagged with NaN and skipped by the writer.
-                    false => f64::NAN,
-                })
-                .collect(),
-        )
-    }
-
-    /// Shortest signed angle from `from` to `to`.
-    #[inline]
-    pub(super) fn delta(from: f64, to: f64) -> f64 {
-        let mut d = to - from;
-        while d > PI {
-            d -= TWO_PI;
-        }
-        while d < -PI {
-            d += TWO_PI;
-        }
-        d
+        // A channel whose definers cancelled exactly carries no information;
+        // leaving it at 0 would be a claim, so it is flagged with NaN and
+        // skipped by the writer.
+        Some(acc.iter().map(|r| r.direction_or_none().unwrap_or(f64::NAN)).collect())
     }
 
     /// Composes every entry into the manifold, `rounds` times.

@@ -1,7 +1,7 @@
 //! Data preprocessing: tokenization, vectorization, and normalization.
 //! Reuses existing Tokenizer and Facet infrastructure.
 
-use phiton::units::TWO_PI;
+use phical::circle::Resultant;
 use phiecs::phasor::facet::Facet;
 use phiton::p64::words::Tokenizer;
 
@@ -30,35 +30,23 @@ impl Preprocessor {
     /// Converts a sentence into a complex wave vector (sum_x, sum_y).
     pub fn sentence_to_wave(facet: &Facet, text: &str) -> (f64, f64) {
         let tokens = Self::text(text);
-        let mut sum_x = 0.0;
-        let mut sum_y = 0.0;
+        let mut wave = Resultant::new();
         for token in &tokens {
             if let Some(phasor) = facet.lexicon.get(token) {
-                sum_x += phasor.amplitude * phasor.phase.cos();
-                sum_y += phasor.amplitude * phasor.phase.sin();
+                wave.add(phasor.amplitude, phasor.phase);
             }
         }
-        (sum_x, sum_y)
+        (wave.x, wave.y)
     }
 
     /// Normalizes a phase-amplitude vector to unit length.
     pub fn normalize_wave(sum_x: f64, sum_y: f64) -> (f64, f64) {
-        let norm = (sum_x * sum_x + sum_y * sum_y).sqrt();
-        if norm > 0.0 {
-            (sum_x / norm, sum_y / norm)
-        } else {
-            (0.0, 0.0)
-        }
+        Resultant { x: sum_x, y: sum_y }.unit()
     }
 
-    /// Computes the phase angle from a wave vector.
+    /// Computes the phase angle from a wave vector, in [0, 2π).
     pub fn wave_phase(sum_x: f64, sum_y: f64) -> f64 {
-        let angle = sum_y.atan2(sum_x);
-        if angle < 0.0 {
-            angle + TWO_PI
-        } else {
-            angle
-        }
+        Resultant { x: sum_x, y: sum_y }.direction_lifted()
     }
 }
 

@@ -93,12 +93,7 @@ impl ComponentLibrary {
             }
         }
 
-        let norm = h.iter().map(|v| v * v).sum::<f32>().sqrt();
-        if norm > 0.0 {
-            for v in h.iter_mut() {
-                *v /= norm;
-            }
-        }
+        phistd::real::normalise_f32(&mut h);
         h
     }
 
@@ -110,7 +105,7 @@ impl ComponentLibrary {
     }
 
     fn cosine(a: &[f32], b: &[f32]) -> f64 {
-        a.iter().zip(b).map(|(x, y)| (x * y) as f64).sum()
+        phistd::real::dot_f32(a, b)
     }
 }
 

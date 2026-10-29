@@ -3,7 +3,6 @@
 use crate::eval::Evaluator;
 use phiecs::phasor::facet::Facet;
 use crate::train::trainer::Trainer;
-use std::f64::consts::PI;
 
 /// ContrastPair - a pair of terms used for fine-tuning phase separation and attraction.
 #[derive(Debug, Clone)]
@@ -26,10 +25,7 @@ impl SyntheticGenerator {
             .lexicon
             .iter()
             .map(|(word, p)| {
-                let mut diff = (p.phase - target_phase).abs();
-                if diff > PI {
-                    diff = 2.0 * PI - diff;
-                }
+                let diff = phical::circle::distance(p.phase, target_phase);
                 (word.clone(), diff)
             })
             .collect();
@@ -59,10 +55,7 @@ impl SyntheticGenerator {
                 let w1 = &words[i];
                 let w2 = &words[j];
                 if let (Some(p1), Some(p2)) = (facet.lexicon.get(w1), facet.lexicon.get(w2)) {
-                    let mut diff = (p1.phase - p2.phase).abs();
-                    if diff > PI {
-                        diff = 2.0 * PI - diff;
-                    }
+                    let diff = phical::circle::distance(p1.phase, p2.phase);
                     if diff < 0.5 {
                         pairs.push(ContrastPair {
                             term_a: w1.clone(),

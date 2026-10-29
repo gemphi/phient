@@ -25,5 +25,5 @@ pub fn read_quests(dir: &Path) -> (Vec<Row>, Vec<String>) {
 /// split every phiano relation reading uses.
 pub fn held_out(r: &Row) -> bool {
     let h = phistd::mix64(phistd::fnv1a(&format!("{}\t{}\t{}", r.about, r.kind, r.other)));
-    ((h >> 11) as f64 / (1u64 << 53) as f64) < 0.2
+    phistd::random::unit_interval(h) < 0.2
 }

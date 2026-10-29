@@ -89,16 +89,7 @@ impl ArcBenchmark {
     fn f1(predicted: &str, expected: &str) -> f64 {
         let p: HashSet<String> = Tokenizer::content_words(predicted).into_iter().collect();
         let e: HashSet<String> = Tokenizer::content_words(expected).into_iter().collect();
-        if p.is_empty() || e.is_empty() {
-            return 0.0;
-        }
-        let hit = p.intersection(&e).count() as f64;
-        let precision = hit / p.len() as f64;
-        let recall = hit / e.len() as f64;
-        match precision + recall > 0.0 {
-            true => 2.0 * precision * recall / (precision + recall),
-            false => 0.0,
-        }
+        phistd::stats::f1(p.intersection(&e).count() as f64, p.len(), e.len())
     }
 
     /// Trains on each task's demonstration pairs, then predicts the held-out input.

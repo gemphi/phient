@@ -1,5 +1,6 @@
 #[allow(unused_imports)]
 use super::*;
+use phical::circle::Resultant;
 
 impl Trainer {
 
@@ -36,33 +37,28 @@ impl Trainer {
         // per sentence, which is why the ranking objective cost 15x what
         // co-occurrence training did. Carrying the sums forward makes it O(L·D)
         // and produces the same context, one token at a time.
-        let mut sx = vec![0.0f64; channels.len()];
-        let mut sy = vec![0.0f64; channels.len()];
+        let mut acc = vec![Resultant::new(); channels.len()];
 
-        let add_token = |facet: &Facet, sx: &mut Vec<f64>, sy: &mut Vec<f64>, t: &str| {
+        let add_token = |facet: &Facet, acc: &mut [Resultant], t: &str| {
             if let Some(p) = facet.lexicon.get(t) {
                 let w = p.amplitude * Self::token_weight(t);
                 for (ci, &k) in channels.iter().enumerate() {
-                    let th = p.theta(k);
-                    sx[ci] += w * th.cos();
-                    sy[ci] += w * th.sin();
+                    acc[ci].add(w, p.theta(k));
                 }
             }
         };
 
-        add_token(facet, &mut sx, &mut sy, &tokens[0]);
+        add_token(facet, &mut acc, &tokens[0]);
 
         for i in 1..tokens.len() {
-            let ctx: Vec<f64> = (0..channels.len())
-                .map(|ci| sy[ci].atan2(sx[ci]))
-                .collect();
+            let ctx: Vec<f64> = acc.iter().map(|r| r.direction()).collect();
 
             let pos_word = tokens[i].clone();
             let r = phistd::mix64(step_seed ^ (i as u64).wrapping_mul(0x9E3779B9));
             let neg_word = match facet.sample_negative(r) {
                 Some(w) if *w != pos_word && !tokens[..i].contains(w) => w.clone(),
                 _ => {
-                    add_token(facet, &mut sx, &mut sy, &pos_word);
+                    add_token(facet, &mut acc, &pos_word);
                     continue;
                 }
             };
@@ -97,7 +93,7 @@ impl Trainer {
                 }
             }
 
-            add_token(facet, &mut sx, &mut sy, &pos_word);
+            add_token(facet, &mut acc, &pos_word);
         }
 
         violations

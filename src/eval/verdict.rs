@@ -112,7 +112,10 @@ impl Evaluator {
         let novelty = match degenerate {
             true => f64::NAN,
             false => {
-                let angular_dist = ((centroid.arg() - wave.arg()).abs()).min(PI);
+                // Folded into [0, π]: two directions either side of the ±π
+                // seam are close, not opposite (the cap at π read them as
+                // maximally novel; fixed 2026-10-28, docs/206).
+                let angular_dist = phical::circle::distance(centroid.arg(), wave.arg());
                 let normalized = angular_dist / PI;
                 (1.0 - (-(normalized * NOVELTY_SCALE * 5.0).min(20.0)).exp())
                     .clamp(0.0, 1.0)

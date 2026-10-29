@@ -35,9 +35,9 @@ impl<'a> PhianoLM<'a> {
                 let p_ph = match scorer(&toks, i) {
                     Some(scores) if scores.len() == v => {
                         let max = scores.iter().cloned().fold(f64::NEG_INFINITY, f64::max);
-                        let z: f64 = scores.iter().map(|s| (PHASE_BETA * (s - max)).exp()).sum();
+                        let z = phistd::prob::softmax_z(scores.iter().copied(), max, PHASE_BETA);
                         match z > 0.0 {
-                            true => (PHASE_BETA * (scores[idx] - max)).exp() / z,
+                            true => phistd::prob::softmax_p(scores[idx], max, PHASE_BETA, z),
                             false => 1.0 / v as f64,
                         }
                     }
@@ -55,7 +55,7 @@ impl<'a> PhianoLM<'a> {
             .iter()
             .zip(sums.iter())
             .map(|(g, s)| {
-                (*g, match n { 0 => f64::INFINITY, _ => (-s / n as f64).exp() })
+                (*g, phistd::prob::perplexity(*s, n))
             })
             .collect()
     }
@@ -95,7 +95,7 @@ impl<'a> PhianoLM<'a> {
             .iter()
             .zip(sums.iter())
             .map(|(g, s)| {
-                (*g, match n { 0 => f64::INFINITY, _ => (-s / n as f64).exp() })
+                (*g, phistd::prob::perplexity(*s, n))
             })
             .collect()
     }

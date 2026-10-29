@@ -14,21 +14,19 @@ impl DefinitionGrounder {
             return None;
         }
 
-        let (mut sum_x, mut sum_y, mut count) = (0.0f64, 0.0f64, 0u32);
+        let (mut centroid, mut count) = (phical::circle::Resultant::new(), 0u32);
         for token in &tokens {
             if Tokenizer::is_function_word(token) {
                 continue;
             }
             if let Some(phasor) = facet.lexicon.get(token) {
-                let th = phasor.theta(0);
-                sum_x += th.cos() * phasor.amplitude;
-                sum_y += th.sin() * phasor.amplitude;
+                centroid.add(phasor.amplitude, phasor.theta(0));
                 count += 1;
             }
         }
 
         match count > 0 {
-            true => Some(sum_y.atan2(sum_x).rem_euclid(TWO_PI)),
+            true => Some(centroid.direction_euclid()),
             false => None,
         }
     }

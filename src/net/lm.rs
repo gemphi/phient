@@ -43,7 +43,7 @@ impl<'a> OperatorScorer<'a> {
     /// Cosine of `y` against every vocabulary item, in LM index order.
     /// Words the space does not know score the mean, so they are neutral.
     fn cosines(&self, y: &WordFunction) -> Vec<f64> {
-        let ny: f64 = y.iter().map(|z| z.norm_sqr()).sum::<f64>().sqrt().max(1e-12);
+        let ny = phistd::real::norm(y).max(1e-12);
         let mut out = Vec::with_capacity(self.map.len());
         let mut sum = 0.0;
         let mut n = 0usize;
@@ -51,11 +51,7 @@ impl<'a> OperatorScorer<'a> {
             match m {
                 Some(i) => {
                     let base = i * 2 * PHASE_CHANNELS;
-                    let mut dot = 0.0;
-                    for (k, yk) in y.iter().enumerate().take(PHASE_CHANNELS) {
-                        // Re(y · conj(f)) = y.re·f.re + y.im·f.im
-                        dot += yk.re * self.flat[base + 2 * k] + yk.im * self.flat[base + 2 * k + 1];
-                    }
+                    let dot = phistd::real::re_dot_interleaved(y, &self.flat[base..base + 2 * PHASE_CHANNELS]);
                     let c = dot / ny;
                     sum += c;
                     n += 1;

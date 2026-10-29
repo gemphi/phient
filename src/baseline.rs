@@ -127,10 +127,7 @@ impl KneserNey {
             }
         }
 
-        match n {
-            0 => f64::INFINITY,
-            _ => (-log_sum / n as f64).exp(),
-        }
+        phistd::prob::perplexity(log_sum, n)
     }
 
     pub fn vocabulary_size(&self) -> usize {

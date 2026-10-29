@@ -85,20 +85,7 @@ impl KindTable {
         let basis = Self::harmonic();
         let score = |set: &[(String, String)]| -> f64 {
             let table = OffsetTable::build(facet, set, est);
-            let mut sum = 0.0;
-            let mut n = 0usize;
-            for i in 0..table.len() {
-                if let Some((_, a)) = table.best_match(i, &basis.rotations) {
-                    if a.is_finite() {
-                        sum += a;
-                        n += 1;
-                    }
-                }
-            }
-            match n {
-                0 => 0.0,
-                _ => sum / n as f64,
-            }
+            phical::circle::mean_nearest(&table.offsets, &basis.rotations)
         };
         SaturationPoint {
             k: PHASE_CHANNELS,
@@ -162,10 +149,6 @@ impl KindTable {
         filler: &str,
     ) -> Option<(RelationType, f64)> {
         let off = RoleDiscovery::offset(facet, head, filler)?;
-        self.rotations
-            .iter()
-            .enumerate()
-            .map(|(i, r)| (RelationType(i as u8), RoleDiscovery::agreement(&off, r)))
-            .max_by(|a, b| a.1.partial_cmp(&b.1).unwrap_or(std::cmp::Ordering::Equal))
+        phical::circle::nearest(&off, &self.rotations).map(|(i, a)| (RelationType(i as u8), a))
     }
 }

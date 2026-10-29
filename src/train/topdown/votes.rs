@@ -1,4 +1,5 @@
 use super::*;
+use phical::circle;
 
 /// One round's evidence: the corpus total and, per word, its own contribution,
 /// its leave-one-out contexts, those contexts unit-normalised, and how many
@@ -60,9 +61,7 @@ impl Descent {
 
         for (sent, st) in usable.iter().zip(states.iter()) {
             let inv = 1.0 / sent.len() as f64;
-            for (k, z) in st.iter().enumerate() {
-                total[k] += *z * inv;
-            }
+            circle::add_scaled(&mut total, st, inv);
 
             let mut by_word: Vec<(&str, Vec<usize>)> = Vec::new();
             for (w, pos) in sent {
@@ -93,9 +92,8 @@ impl Descent {
                 // once the word is removed — its own contribution still has
                 // to come out of the corpus total above, but it casts no
                 // vote below.
-                let loo: Vec<c64> =
-                    (0..PHASE_CHANNELS).map(|k| st[k] * inv - own[k]).collect();
-                if !loo.iter().any(|z| z.norm() > 1e-12) {
+                let loo = circle::leave_one_out(st, &own, inv);
+                if circle::is_silent(&loo) {
                     continue;
                 }
 
@@ -104,11 +102,7 @@ impl Descent {
                     l[k] += loo[k];
                 }
                 let u = unit_sum.entry(w).or_insert_with(zeros);
-                for k in 0..PHASE_CHANNELS {
-                    if loo[k].norm() > 1e-12 {
-                        u[k] += loo[k] / loo[k].norm();
-                    }
-                }
+                circle::add_directions(u, &loo);
                 *counts.entry(w).or_insert(0) += 1;
             }
         }
@@ -144,11 +138,11 @@ impl Descent {
             // threshold therefore lets rare words move on noise while
             // holding frequent ones still — exactly backwards. The floor is
             // the chance resultant for that word's own context count.
-            let agree_floor = concentration.max(RAYLEIGH_C / n.max(1.0).sqrt());
+            let agree_floor = circle::rayleigh_floor(concentration, RAYLEIGH_C, n);
 
             for k in 0..PHASE_CHANNELS {
                 // Do this word's contexts agree with each other at all?
-                if unit[k].norm() / n < agree_floor {
+                if circle::scattered(unit[k], n, agree_floor) {
                     continue;
                 }
 
@@ -158,24 +152,15 @@ impl Descent {
                 // minus this word — so the difference is exactly "what this
                 // word's contexts have that the average context does not".
                 // A word present in every sentence has the two averages
-                // equal by construction and a residual of zero.
-                let d = loo[k] / n;
-                let m = (total[k] - own[k]) / n_sent;
-                let t = if contrast { d - m } else { d };
+                // equal by construction and a residual of zero; under
+                // contrast it has nothing left to move toward, and the
+                // argument of a residual that small is a rounding error.
+                let target = match circle::vote_target(loo[k], total[k], own[k], n, n_sent, contrast, CONTRAST_MIN) {
+                    Some(t) => t,
+                    None => continue,
+                };
 
-                // Under contrast, a word whose contexts are the corpus
-                // average has nothing left to move toward, and the argument
-                // of a residual that small is a rounding error.
-                if contrast && t.norm() < CONTRAST_MIN * m.norm() {
-                    continue;
-                }
-                if t.norm() < 1e-12 {
-                    continue;
-                }
-
-                let delta = (t.arg() - thetas[k] + std::f64::consts::PI).rem_euclid(TWO_PI)
-                    - std::f64::consts::PI;
-                thetas[k] = (thetas[k] + step * delta).rem_euclid(TWO_PI);
+                thetas[k] = circle::step_toward(thetas[k], target, step);
                 moved = true;
             }
             if moved {

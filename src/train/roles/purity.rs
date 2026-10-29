@@ -48,13 +48,8 @@ impl Coherence {
         if offsets.len() < 2 {
             return 0.0;
         }
-        let refs: Vec<&Vec<f64>> = offsets.iter().collect();
-        let mean = RoleDiscovery::centroid(&refs);
-        offsets
-            .iter()
-            .map(|o| RoleDiscovery::agreement(o, &mean))
-            .sum::<f64>()
-            / offsets.len() as f64
+        let mean = phical::circle::centroid(&offsets, PHASE_CHANNELS);
+        phical::circle::mean_agreement(&offsets, &mean)
     }
 
     /// Pulls every pair in a group toward the group's shared offset.
@@ -81,7 +76,7 @@ impl Coherence {
         }
 
         let refs: Vec<&Vec<f64>> = offsets.iter().map(|(_, o)| o).collect();
-        let mean = RoleDiscovery::centroid(&refs);
+        let mean = phical::circle::centroid(&refs, PHASE_CHANNELS);
 
         // READ: every target against frozen phases.
         let mut targets: Vec<(String, Vec<f64>)> = Vec::with_capacity(offsets.len());
@@ -102,13 +97,7 @@ impl Coherence {
             if let Some(p) = facet.lexicon.get_mut(filler) {
                 for (k, &t) in target.iter().enumerate() {
                     let cur = p.theta(k);
-                    let mut d = t - cur;
-                    while d > std::f64::consts::PI {
-                        d -= TWO_PI;
-                    }
-                    while d < -std::f64::consts::PI {
-                        d += TWO_PI;
-                    }
+                    let d = phical::circle::delta(cur, t);
                     p.set_theta(k, cur + rate * d);
                 }
                 p.sync_phase();

@@ -82,11 +82,7 @@ impl ForgettingBenchmark {
         let sequential_ppl = Self::ppl(&sequential, a_eval);
         let counts_ppl = Self::ppl_counts(&sequential, a_eval);
 
-        let span = floor_ppl.ln() - ceiling_ppl.ln();
-        let retention = match span.abs() < 1e-9 {
-            true => f64::NAN,
-            false => ((floor_ppl.ln() - sequential_ppl.ln()) / span).clamp(0.0, 1.5),
-        };
+        let retention = phistd::stats::log_share(floor_ppl, ceiling_ppl, sequential_ppl).map_or(f64::NAN, |r| r.clamp(0.0, 1.5));
         let degradation_pct = (sequential_ppl / a_only_ppl - 1.0) * 100.0;
 
         let verdict = match retention {

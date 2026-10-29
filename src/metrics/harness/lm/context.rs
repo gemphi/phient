@@ -146,13 +146,10 @@ impl<'a> PhianoLM<'a> {
             scores.push(s);
         }
 
-        let mut z = 0.0;
-        for s in &scores {
-            z += (s - max).exp();
-        }
+        let z = phistd::prob::softmax_z(scores.iter().copied(), max, 1.0);
         if z <= 0.0 {
             return 1.0 / v as f64;
         }
-        (scores[target_idx] - max).exp() / z
+        phistd::prob::softmax_p(scores[target_idx], max, 1.0, z)
     }
 }
