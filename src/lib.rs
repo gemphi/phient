@@ -1,5 +1,16 @@
 //! # phient — Phient's Phasor Language Model
 //!
+//! > The science of operations, as derived from mathematics more especially,
+//! > is a science of itself, and has its own abstract truth and value.
+//! >
+//! > — Augusta Ada Lovelace, Note A (1843)
+//!
+//! Lovelace saw, a century early, that a machine of numbers could operate on
+//! relations and not only on quantities. phient is that wager: a word is its
+//! relations, carried as phasors, and learning moves them. Her Notes are read
+//! onto the architecture in phisor's `lovelace` module and in
+//! `phinet/docs/lovelace.md`.
+//!
 //! In Phient's world, a word (w) is a seed: what it relates to, under what
 //! conditions (c), grows from it. The Phical paradigm, X ⇒ Y, drives and
 //! composes Phient's Phasor Language Models: Phinet, Phiano, PhiTon. Phical

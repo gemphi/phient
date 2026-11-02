@@ -81,3 +81,48 @@ fn test_sense_count_is_capped() {
 fn test_plain_text_is_untouched_apart_from_case() {
     assert_eq!(clean_definition("An adult female person"), "an adult female person");
 }
+
+
+/// The Wiktionary adapter lifts relations, not just glosses, from a
+/// Kaikki-shaped JSONL fixture: synonyms and hypernyms from both the entry
+/// level and a sense, rendered as trainable `[about, kind, other]` sentences.
+#[test]
+fn test_wiktionary_lifts_relations_and_glosses_from_kaikki() {
+    use super::wiktionary::WiktionarySource;
+    // Two Kaikki-style lines: `cat` with an entry-level synonym and a
+    // sense-level hypernym; `big` with a sense-level antonym.
+    let jsonl = concat!(
+        "{\"word\":\"cat\",\"pos\":\"noun\",\"synonyms\":[{\"word\":\"feline\"}],",
+        "\"senses\":[{\"glosses\":[\"a small domesticated carnivore\"],",
+        "\"hypernyms\":[{\"word\":\"animal\"}]}]}\n",
+        "{\"word\":\"big\",\"pos\":\"adj\",\"senses\":[{\"glosses\":[\"of great size\"],",
+        "\"antonyms\":[{\"word\":\"small\"}]}]}\n"
+    );
+    let dir = std::env::temp_dir().join("phient_wiktionary_rel");
+    std::fs::create_dir_all(&dir).unwrap();
+    let path = dir.join("kaikki.jsonl");
+    std::fs::write(&path, jsonl).unwrap();
+    let source = WiktionarySource::new(path.to_str().unwrap());
+
+    // Glosses still come through the definition path.
+    let defs = source.fetch_definitions("cat");
+    assert!(defs.iter().any(|d| d.contains("domesticated")), "gloss lifted: {defs:?}");
+
+    // Relations come through the new path, from both entry and sense level.
+    let rels = source.relations();
+    assert!(rels.iter().any(|r| r.about == "cat" && r.kind == "synonym" && r.other == "feline"));
+    assert!(rels.iter().any(|r| r.about == "cat" && r.kind == "hypernym" && r.other == "animal"));
+    assert!(rels.iter().any(|r| r.about == "big" && r.kind == "antonym" && r.other == "small"));
+
+    // The trainable sentences put the marker in the middle so the relation
+    // channel keys on it, and drop any degenerate self-relation.
+    let sentences = source.relation_sentences();
+    assert!(sentences.contains(&vec!["cat".to_string(), "synonym".to_string(), "feline".to_string()]));
+    assert!(sentences.iter().all(|s| s.len() == 3 && s[0] != s[2]));
+
+    // Part-of-speech is lifted too, lowercased.
+    let pos = source.parts_of_speech();
+    assert!(pos.contains(&("cat".to_string(), "noun".to_string())));
+    assert!(pos.contains(&("big".to_string(), "adj".to_string())));
+    let _ = std::fs::remove_dir_all(&dir);
+}
