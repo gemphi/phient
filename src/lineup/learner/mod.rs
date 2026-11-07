@@ -49,6 +49,7 @@ mod scratch;
 mod step;
 mod store;
 mod train;
+mod widen;
 #[cfg(test)]
 mod tests;
 

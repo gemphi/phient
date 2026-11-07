@@ -7,6 +7,7 @@ Paths are under `src/`. Diagrams: [ARCHITECTURE.md](ARCHITECTURE.md).
 - [ ] lineup: the learner does not beat the smoothed trigram on held-out sentences (21.3% top-1, perplexity 101.2; trigram 24.8%, 84.7).
 - [ ] lineup: train it on more text than one book; try a wider block and more channels with more silence; full softmax for the last epochs.
 - [x] lineup: phiano's `talk` and workshop read the learner now (2026-10-28).
+- [x] lineup: the learner widens (`learner/widen.rs`, 2026-11-07): more channels for a learner that has already learned, the old kept bit for bit, the new born quiet enough that it reads as it did (a fresh birth's amplitude took a read from perplexity 197 to 336; a thousandth of it leaves it within 5%), and learns on. docs/210.
 - [x] lineup: the learner saves and loads whole (`learner/store.rs`, 2026-11-07), bit-exact — the same scores and the same next epoch — so a run starts where the last stopped and learning accumulates across runs (docs/208). Before this every run began at the seed.
 
 ## Correctness

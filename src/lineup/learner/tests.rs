@@ -176,3 +176,48 @@ fn a_saved_learner_reads_back_whole_and_goes_on() {
     b.tell(&line("zebra quagga okapi"));
     assert_eq!((b.vocabulary(), b.lines_told()), (a.vocabulary() + 3, 301));
 }
+
+/// Widened, the learner keeps every old channel bit for bit, reads nearly
+/// as it did (the new channels are born quiet), learns on with a falling
+/// error, and round-trips through a checkpoint at its new width.
+#[test]
+fn widened_the_learner_keeps_its_channels_and_learns_on() {
+    let Some(lines) = guide(340) else { return };
+    let mut a = Learner::new(Config { channels: 16, context: 4, block: 4, negatives: 16, epochs: 1, silence: 0.2, ..Config::default() });
+    for s in &lines[..300] {
+        a.tell(s);
+    }
+    a.epoch();
+    let before = a.clone();
+    assert!(!a.widen(16) && !a.widen(18), "not wider, or not a multiple of the block");
+    assert!(a.widen(24));
+    assert_eq!((a.config.channels, a.vocabulary(), a.lines_told()), (24, before.vocabulary(), 300));
+    for w in 0..before.word.len() as u32 {
+        let ((br, bi), (ar, ai)) = (before.reach.row(w), a.reach.row(w));
+        assert_eq!((&ar[..16], &ai[..16]), (br, bi), "word {w}'s old channels");
+        let ((br, bi), (ar, ai)) = (before.cond.row(w), a.cond.row(w));
+        assert_eq!((&ar[..16], &ai[..16]), (br, bi));
+        assert!(ar[16..].iter().zip(&ai[16..]).all(|(r, i)| (r * r + i * i - 1.0).abs() < 1e-5), "born on the circle");
+    }
+    let (p0, p1) = (before.measure(&lines[300..]).perplexity(), a.measure(&lines[300..]).perplexity());
+    assert!((p1 - p0).abs() / p0 < 0.05, "it reads nearly as before: {p0} -> {p1}");
+    let (l1, l2) = (a.epoch(), a.epoch());
+    assert!(l2 < l1, "the error falls on: {l1} then {l2}");
+    let path = std::env::temp_dir().join(format!("phient-widen-{}.ckpt", std::process::id()));
+    a.save(&path).unwrap();
+    let b = Learner::load(&path).unwrap();
+    let _ = std::fs::remove_file(&path);
+    let print = |l: &Learner| {
+        let mut print = 0u64;
+        for s in &lines[300..] {
+            for j in 1..s.len() {
+                let (scores, end) = l.scores(&s[..j]);
+                for x in scores.iter().chain([&end]) {
+                    print = phistd::mix64(print ^ x.to_bits() as u64);
+                }
+            }
+        }
+        print
+    };
+    assert_eq!((b.config.channels, print(&b)), (24, print(&a)));
+}
