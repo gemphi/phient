@@ -221,3 +221,24 @@ fn widened_the_learner_keeps_its_channels_and_learns_on() {
     };
     assert_eq!((b.config.channels, print(&b)), (24, print(&a)));
 }
+
+#[test]
+fn forgetting_the_stride_keeps_what_was_learned_and_steps_larger() {
+    let lines: Vec<Vec<String>> = ["the cat sat on the mat", "the dog sat on the log", "a cat sat on a log"].iter().map(|s| line(s)).collect();
+    let mut l = Learner::new(small());
+    for s in &lines {
+        l.tell(s);
+    }
+    for _ in 0..3 {
+        l.epoch();
+    }
+    let before = l.scores(&line("the cat sat on the")).0;
+    let mut sure = l.clone();
+    let mut fresh = l.clone();
+    fresh.forget(0.0);
+    assert_eq!(fresh.scores(&line("the cat sat on the")).0, before, "forgetting the stride changes no answer");
+    sure.epoch();
+    fresh.epoch();
+    let moved = |a: &Learner| a.scores(&line("the cat sat on the")).0.iter().zip(&before).map(|(x, y)| (x - y).abs()).sum::<f32>();
+    assert!(moved(&fresh) > moved(&sure), "a fresh stride steps further than a sure one: {} vs {}", moved(&fresh), moved(&sure));
+}
