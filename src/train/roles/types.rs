@@ -113,12 +113,13 @@ pub struct LexicalRule {
     pub(super) by_head: HashMap<String, Vec<usize>>,
 }
 
-/// Prepositions that mark a relation between a head and a following noun.
+/// Whether `w` is a preposition that marks a relation between a head and
+/// a following noun: `data/lex/relational_prepositions.txt`.
 ///
 /// Deliberately only the relational ones. `the`, `a` and `and` mark no
 /// relation; `of`, `for`, `with` and the rest each mark a different one, and
 /// which is which is not decided here — the clustering decides whether two
 /// prepositions turn out to name the same relation.
-pub const RELATIONAL_PREPOSITIONS: [&str; 12] = [
-    "of", "for", "in", "with", "by", "to", "from", "on", "at", "into", "upon", "against",
-];
+pub fn is_relational_preposition(w: &str) -> bool {
+    crate::lex::is("relational_prepositions", w)
+}

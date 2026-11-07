@@ -7,13 +7,10 @@ use phical::circle::Resultant;
 /// Not a stopword list for retrieval: these are the words that appear in a
 /// large fraction of *all* definitions, so binding them into a composition adds
 /// the same vector to every concept and washes the manifold out.
+///
+/// Which words: `data/lex/structural.txt`.
 pub(super) fn is_structural(w: &str) -> bool {
-    matches!(
-        w,
-        "a" | "an" | "the" | "of" | "or" | "and" | "to" | "in" | "is" | "are" | "as" | "that"
-            | "which" | "with" | "for" | "by" | "on" | "at" | "from" | "it" | "its" | "any"
-            | "one" | "used" | "being" | "having" | "esp" | "especially" | "also"
-    )
+    crate::lex::is("structural", w)
 }
 
 impl Conception {

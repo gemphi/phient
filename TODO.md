@@ -2,6 +2,10 @@
 
 Paths are under `src/`. Diagrams: [ARCHITECTURE.md](ARCHITECTURE.md).
 
+## No data in code (2026-11-07)
+
+- [x] The two English word lists the rules named are files: `data/lex/structural.txt` (`train::conception::is_structural`) and `data/lex/relational_prepositions.txt` (`train::roles::is_relational_preposition`), read through `lex::words` / `lex::is`. `FEATURE_NAMES` names features and stays code; `sources::strip::MARKERS` are one dictionary source's markup, left for now.
+
 ## The lineup and the learner (docs/203)
 
 - [ ] lineup: the learner does not beat the smoothed trigram on held-out sentences (21.3% top-1, perplexity 101.2; trigram 24.8%, 84.7).

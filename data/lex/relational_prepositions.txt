@@ -1,0 +1,13 @@
+# the prepositions that mark a relation between a head and the next content word; the, a, and mark none
+of
+for
+in
+with
+by
+to
+from
+on
+at
+into
+upon
+against

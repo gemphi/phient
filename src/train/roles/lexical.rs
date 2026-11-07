@@ -68,7 +68,7 @@ impl LexicalRule {
     pub fn extract(&mut self, head: &str, gloss: &str, is_content: impl Fn(&str) -> bool) {
         let toks: Vec<String> = phiton::p64::words::Tokenizer::tokenize(gloss);
         for (i, w) in toks.iter().enumerate() {
-            if !RELATIONAL_PREPOSITIONS.contains(&w.as_str()) {
+            if !is_relational_preposition(w) {
                 continue;
             }
             // The filler is the first content word after the preposition, within

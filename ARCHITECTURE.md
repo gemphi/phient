@@ -17,6 +17,7 @@ graph TB
         m_prose["prose"]
         m_relate["relate"]
         m_scribe["scribe"]
+        m_lex["lex<br/>data/lex/{structural, relational_prepositions}.txt<br/>words · is (phistd::lexfile::cached)"]
         m_study["study"]
         m_train["train<br/>trainer, topdown, chunker, conception, sources, roles, grounding<br/>kinds, synthetic, curriculum, correction, envision, synthesis, lifelong"]
     end
@@ -41,6 +42,7 @@ graph TB
     m_relate --> m_operator
     m_relate --> m_prose
     m_scribe --> m_lineup
+    m_train --> m_lex
     m_scribe --> m_study
     X_phical["phical (crate)"]
     m_generate -.-> X_phical

@@ -46,6 +46,7 @@ pub mod baseline;
 pub mod code;
 pub mod eval;
 pub mod generate;
+pub mod lex;
 pub mod lineup;
 pub mod memory;
 pub mod metrics;
