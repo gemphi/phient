@@ -140,3 +140,39 @@ fn the_numbers_on_the_guide_do_not_move() {
     // Pinned 2026-10-29 from the code before batch 4.
     assert_eq!((losses, print), (vec![4612860791556017263u64, 4611911870419914518u64], 0x12fcdbd401d3768cu64));
 }
+
+/// A learner saved and read back is the same learner: it scores the same,
+/// its next epoch takes the same steps, and a line told after the
+/// read-back is taken, new words and all. The fingerprint is the golden
+/// test's, so it is sequential and bit-exact.
+#[test]
+fn a_saved_learner_reads_back_whole_and_goes_on() {
+    let Some(lines) = guide(340) else { return };
+    let print = |l: &Learner| {
+        let mut print = 0u64;
+        for s in &lines[300..] {
+            for j in 1..s.len() {
+                let (scores, end) = l.scores(&s[..j]);
+                for x in scores.iter().chain([&end]) {
+                    print = phistd::mix64(print ^ x.to_bits() as u64);
+                }
+            }
+        }
+        print
+    };
+    let mut a = Learner::new(Config { channels: 16, context: 4, block: 4, negatives: 16, epochs: 1, silence: 0.2, ..Config::default() });
+    for s in &lines[..300] {
+        a.tell(s);
+    }
+    a.epoch();
+    let path = std::env::temp_dir().join(format!("phient-learner-{}.ckpt", std::process::id()));
+    a.save(&path).unwrap();
+    let mut b = Learner::load(&path).unwrap();
+    let _ = std::fs::remove_file(&path);
+    assert_eq!((b.vocabulary(), b.lines_told()), (a.vocabulary(), 300));
+    assert_eq!(print(&b), print(&a));
+    assert_eq!(a.epoch().to_bits(), b.epoch().to_bits(), "the next epoch takes the same steps");
+    assert_eq!(print(&b), print(&a));
+    b.tell(&line("zebra quagga okapi"));
+    assert_eq!((b.vocabulary(), b.lines_told()), (a.vocabulary() + 3, 301));
+}

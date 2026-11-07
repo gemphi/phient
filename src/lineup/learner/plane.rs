@@ -3,7 +3,7 @@
 /// One table of phasors: rows of `d` complex numbers, real and imaginary
 /// parts apart (so the channel loops vectorise), with one Adagrad
 /// accumulator per row.
-#[derive(Clone)]
+#[derive(Clone, serde::Serialize, serde::Deserialize)]
 pub(super) struct Plane {
     pub(super) d: usize,
     pub(super) re: Vec<f32>,

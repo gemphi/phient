@@ -47,6 +47,7 @@ mod read;
 mod reader;
 mod scratch;
 mod step;
+mod store;
 mod train;
 #[cfg(test)]
 mod tests;

@@ -1,7 +1,7 @@
 //! What the learner is built from and how it is trained.
 
 /// How the learner is built and trained.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Config {
     /// Phasors per word per role — "a word is 32–64 relations".
     pub channels: usize,
