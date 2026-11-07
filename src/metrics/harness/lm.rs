@@ -43,7 +43,13 @@ impl<'a> PhianoLM<'a> {
             .map(|c| if total > 0.0 { c / total } else { 0.0 })
             .collect();
 
-        Self { facet, index, vecs, unigram, gamma, sectors, readout: None }
+        Self { facet, index, vecs, unigram, gamma, discount: DISCOUNT, sectors, readout: None }
+    }
+
+    /// The same model with its n-gram discount set (clamped to [0, 0.99]).
+    pub fn with_discount(mut self, discount: f64) -> Self {
+        self.discount = discount.clamp(0.0, 0.99);
+        self
     }
 
     /// Angles of a context vector, for keying the readout table.

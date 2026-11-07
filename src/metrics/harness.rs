@@ -135,6 +135,9 @@ const PHASE_BETA: f64 = 8.0;
 /// Absolute discount for Phiano's own n-gram tables.
 const DISCOUNT: f64 = 0.75;
 
+/// Discounts a caller may choose between, on dev text.
+pub const DISCOUNT_GRID: [f64; 5] = [0.6, 0.75, 0.85, 0.9, 0.95];
+
 /// Mixing weights swept when measuring the phase layer's contribution.
 pub const GAMMA_GRID: [f64; 11] =
     [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0];
@@ -167,6 +170,8 @@ pub struct PhianoLM<'a> {
     pub(super) vecs: Vec<f64>,
     pub(super) unigram: Vec<f64>,
     pub(super) gamma: f64,
+    /// Absolute discount of the n-gram tables; `DISCOUNT` unless set.
+    pub(super) discount: f64,
     /// Target sector of every vocabulary item, on channel 0. Precomputed so the
     /// readout lookup inside the scoring loop is one indexed read.
     pub(super) sectors: Vec<usize>,

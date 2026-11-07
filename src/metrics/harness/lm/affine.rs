@@ -10,11 +10,12 @@ impl<'a> PhianoLM<'a> {
         // Absolute discounting from the facet's own interned tables. The
         // context key is a (u32, u32) tuple, so scoring a position no longer
         // allocates a joined String per lookup.
+        let d = self.discount;
         let (bi_const, bi_coef) = match self.facet.bigram_stats(b, c) {
             Some(st) if st.total > 0 => {
-                let lambda = DISCOUNT * st.types as f64 / st.total as f64;
+                let lambda = d * st.types as f64 / st.total as f64;
                 (
-                    (st.count as f64 - DISCOUNT).max(0.0) / st.total as f64,
+                    (st.count as f64 - d).max(0.0) / st.total as f64,
                     lambda,
                 )
             }
@@ -23,9 +24,9 @@ impl<'a> PhianoLM<'a> {
 
         match self.facet.trigram_stats(a, b, c) {
             Some(st) if st.total > 0 => {
-                let lambda = DISCOUNT * st.types as f64 / st.total as f64;
+                let lambda = d * st.types as f64 / st.total as f64;
                 (
-                    (st.count as f64 - DISCOUNT).max(0.0) / st.total as f64
+                    (st.count as f64 - d).max(0.0) / st.total as f64
                         + lambda * bi_const,
                     lambda * bi_coef,
                 )
