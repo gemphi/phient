@@ -100,56 +100,68 @@ impl<'a> PhianoLM<'a> {
             return self.perplexity_two_word(sentences);
         }
 
-        let floor = 1.0 / (self.unigram.len().max(1) as f64 * 100.0);
         let (log_sum, n) = sentences
             .par_iter()
             .map(|sentence| {
-                let toks = Tokenizer::tokenize(sentence);
-                if toks.len() < 3 {
-                    return (0.0f64, 0usize);
-                }
-                let mut h = vec![phistd::c64::new(0.0, 0.0); LM_CHANNELS];
-                if kind.is_recurrent() {
-                    self.advance(&mut h, &toks[0]);
-                    self.advance(&mut h, &toks[1]);
-                }
-
-                let (mut sum, mut count) = (0.0f64, 0usize);
-                for i in 2..toks.len() {
-                    let (a, b, c) = (&toks[i - 2], &toks[i - 1], &toks[i]);
-                    let idx = self.index.get(c).copied();
-
-                    let ctx = match kind {
-                        ContextKind::Recurrent => Some(Self::state_to_ctx(&h)),
-                        ContextKind::Bound => self.context_vec_bound(a, b),
-                        ContextKind::TwoWord => self.context_vec(a, b),
-                    };
-
-                    let p = match idx {
-                        None => floor,
-                        Some(idx) => {
-                            let (k, coef) = self.affine(a, b, c);
-                            let p_uni = self.unigram[idx].max(floor);
-                            let p_ph = match ctx {
-                                Some(ref v) => self.p_phase(v, idx),
-                                None => p_uni,
-                            };
-                            let base = self.gamma * p_ph + (1.0 - self.gamma) * p_uni;
-                            (k + coef * base).max(1e-12)
-                        }
-                    };
-                    sum += p.ln();
-                    count += 1;
-
-                    if kind.is_recurrent() {
-                        self.advance(&mut h, c);
-                    }
-                }
-                (sum, count)
+                let scored = self.scored_tokens_of(&Tokenizer::tokenize(sentence), kind);
+                (scored.iter().map(|(_, lp)| lp).sum::<f64>(), scored.len())
             })
             .reduce(|| (0.0f64, 0usize), |a, b| (a.0 + b.0, a.1 + b.1));
 
         phistd::prob::perplexity(log_sum, n)
+    }
+
+    /// Every scored position of the held-out sentences as `(token, ln p)`, at
+    /// [`PhianoLM::DEFAULT_CONTEXT`]: the same positions and probabilities
+    /// [`PhianoLM::perplexity`] averages (token 2 onward of each sentence), so
+    /// a diagnostic can group them without re-deriving the score.
+    pub fn scored_tokens(&self, sentences: &[String]) -> Vec<(String, f64)> {
+        sentences
+            .par_iter()
+            .flat_map_iter(|s| self.scored_tokens_of(&Tokenizer::tokenize(s), Self::DEFAULT_CONTEXT))
+            .collect()
+    }
+
+    fn scored_tokens_of(&self, toks: &[String], kind: ContextKind) -> Vec<(String, f64)> {
+        if toks.len() < 3 {
+            return Vec::new();
+        }
+        let floor = 1.0 / (self.unigram.len().max(1) as f64 * 100.0);
+        let mut h = vec![phistd::c64::new(0.0, 0.0); LM_CHANNELS];
+        if kind.is_recurrent() {
+            self.advance(&mut h, &toks[0]);
+            self.advance(&mut h, &toks[1]);
+        }
+
+        let mut out = Vec::with_capacity(toks.len() - 2);
+        for i in 2..toks.len() {
+            let (a, b, c) = (&toks[i - 2], &toks[i - 1], &toks[i]);
+            let ctx = match kind {
+                ContextKind::Recurrent => Some(Self::state_to_ctx(&h)),
+                ContextKind::Bound => self.context_vec_bound(a, b),
+                ContextKind::TwoWord => self.context_vec(a, b),
+            };
+
+            let p = match self.index.get(c).copied() {
+                None => floor,
+                Some(idx) => {
+                    let (k, coef) = self.affine(a, b, c);
+                    let p_uni = self.unigram[idx].max(floor);
+                    let p_ph = match ctx {
+                        Some(ref v) => self.p_phase(v, idx),
+                        None => p_uni,
+                    };
+                    let base = self.gamma * p_ph + (1.0 - self.gamma) * p_uni;
+                    (k + coef * base).max(1e-12)
+                }
+            };
+            out.push((c.clone(), p.ln()));
+
+            if kind.is_recurrent() {
+                self.advance(&mut h, c);
+            }
+        }
+        out
     }
 
     /// Recurrent context state, per channel, over a sentence prefix.
