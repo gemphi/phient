@@ -30,6 +30,8 @@ pub struct CurriculumResult {
     pub stages_completed: usize,
     pub words_learned: usize,
     pub sentences_trained: usize,
+    /// The facet's n-gram entries after the last stage: a total the facet
+    /// keeps, read once at the end, not a sum of per-stage counts.
     pub bigrams_recorded: usize,
     pub definitions_grounded: usize,
     pub vocabulary_before: usize,
@@ -85,7 +87,6 @@ impl ChildCurriculum {
         let vocab_before = facet.vocabulary_size();
         let mut words_learned = 0usize;
         let mut sentences_trained = 0usize;
-        let mut bigrams_recorded = 0usize;
         let mut stage_details = Vec::new();
 
         let entries = chunk_store.load_all();
@@ -114,8 +115,6 @@ impl ChildCurriculum {
                 }
             }
 
-            bigrams_recorded = facet.ngram_entries();
-
             words_learned += stage_words;
             sentences_trained += stage_sentences;
 
@@ -131,6 +130,7 @@ impl ChildCurriculum {
             });
         }
 
+        let bigrams_recorded = facet.ngram_entries();
         let grounded = DefinitionGrounder::ground_phases(facet, chunk_store);
 
         CurriculumResult {
