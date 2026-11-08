@@ -9,6 +9,11 @@ license = "MIT"
 name = "phient"
 path = "src/lib.rs"
 
+# `relate`: ask a `.relate` model what a word calls for (moved from phiano).
+[[bin]]
+name = "relate"
+path = "src/bin/relate/main.rs"
+
 [dependencies]
 phistd = { path = "../phistd" }
 phical = { path = "../phical" }
