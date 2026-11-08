@@ -28,5 +28,7 @@ rayon = "1.8"
 serde_json = "1.0"
 # The sources fetch definitions over HTTP (train/sources/api).
 reqwest = { version = "0.11", features = ["blocking", "json"] }
+# The wiki source sleeps between requests (train/wiki; moved from phiano, 14.2).
+tokio = { version = "1.0", features = ["time"] }
 syn = { version = "2", features = ["full", "visit"] }
 proc-macro2 = "1"

@@ -21,6 +21,7 @@ pub mod grounding;
 pub mod roles;
 pub mod sources;
 pub mod topdown;
+pub mod wiki;
 pub mod trainer;
 
 pub use trainer::Trainer;
