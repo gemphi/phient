@@ -20,6 +20,7 @@
 //!   phase-conjugate mirror (docs/153). The operators themselves live in
 //!   [`crate::operator`]; this module is the counting.
 
+pub mod being;
 pub mod counts;
 mod dist;
 pub mod field;
