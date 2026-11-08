@@ -16,6 +16,7 @@
 pub mod arena;
 pub mod class;
 pub mod lab;
+pub mod seam;
 pub mod score;
 pub use arena::{Arena, Reader};
 pub use score::Score;
