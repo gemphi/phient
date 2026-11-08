@@ -21,6 +21,7 @@
 //!   [`crate::operator`]; this module is the counting.
 
 pub mod being;
+pub mod lisp;
 pub mod set;
 pub mod counts;
 mod dist;
