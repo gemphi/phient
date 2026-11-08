@@ -26,6 +26,7 @@ pub mod field;
 mod kin;
 mod table;
 pub mod levels;
+pub mod trace;
 pub mod tree;
 mod weights;
 mod path;
