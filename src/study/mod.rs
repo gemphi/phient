@@ -14,6 +14,7 @@
 //! by one [`Score`] for every model: rank and probability, nothing else.
 
 pub mod arena;
+pub mod class;
 pub mod lab;
 pub mod score;
 pub use arena::{Arena, Reader};
