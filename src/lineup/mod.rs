@@ -2,8 +2,8 @@
 //! run says which of Phient's models is learning better. Every reader
 //! answers the same question at the same position before any of them is
 //! told it ([`crate::study::Arena`]); the table at the end is the
-//! leaderboard. A reader that needs an application's world (phiano's
-//! `arena::Ecs`, which reads a persona) lives with that application.
+//! leaderboard. The `Ecs` reader reads a phiecs persona's
+//! world (it moved here from phiano, docs/176).
 //!
 //! | reader | the model it stands for |
 //! |---|---|
@@ -15,12 +15,14 @@
 
 pub mod concept;
 pub mod count;
+pub mod ecs;
 pub mod learner;
 pub mod mirror;
 pub mod operator;
 
 pub use concept::Concept;
 pub use count::Count;
+pub use ecs::Ecs;
 pub use learner::Learner;
 pub use mirror::Mirror;
 pub use operator::Operator;
