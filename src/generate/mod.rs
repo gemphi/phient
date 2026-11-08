@@ -13,6 +13,7 @@ mod beam;
 pub mod compose;
 pub mod constants;
 pub mod learn;
+pub mod sector;
 mod candidates;
 mod context;
 mod decode;
