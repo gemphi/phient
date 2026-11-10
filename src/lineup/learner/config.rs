@@ -23,9 +23,25 @@ pub struct Config {
     pub negatives: usize,
     /// Adagrad's step.
     pub rate: f32,
+    /// Lines told over which an Adagrad accumulator falls to a tenth, so
+    /// the learner keeps a stride as its history grows instead of being
+    /// forgotten by hand once an instalment (`forget`; phiano docs/231,
+    /// 232). 0 keeps the whole history: the step shrinks for ever.
+    pub stride: u32,
     /// Passes over everything told, when the arena says training is over.
     pub epochs: usize,
     pub seed: u64,
+}
+
+impl Config {
+    /// ln of the share an accumulator keeps per line told: 0 when the
+    /// history is kept whole, else ln(0.1) / stride.
+    pub fn decay(&self) -> f32 {
+        match self.stride {
+            0 => 0.0,
+            n => (0.1f32).ln() / n as f32,
+        }
+    }
 }
 
 impl Default for Config {
@@ -40,6 +56,7 @@ impl Default for Config {
             silence: 0.0,
             negatives: 128,
             rate: 0.5,
+            stride: 0,
             epochs: 3,
             seed: 7,
         }

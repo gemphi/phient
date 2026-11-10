@@ -83,6 +83,9 @@ impl Learner {
                 }
             }
         }
+        // The new rows carry the old rows' experience, so they count as
+        // touched now; the old rows' clocks go with them.
+        op.touch_all(self.told.len() as u32);
         self.op = op;
         // The pair: its new entries at a thousandth of its birth amplitude.
         self.pair.re.extend(std::iter::repeat((0.1 * QUIET) as f32).take(n - d));

@@ -2,11 +2,11 @@ use super::*;
 use crate::lineup::Count;
 use crate::study::Reader;
 
-fn line(s: &str) -> Vec<String> {
+pub(super) fn line(s: &str) -> Vec<String> {
     s.split(' ').map(String::from).collect()
 }
 
-fn small() -> Config {
+pub(super) fn small() -> Config {
     Config { channels: 16, context: 3, negatives: 8, rate: 0.1, epochs: 30, ..Config::default() }
 }
 

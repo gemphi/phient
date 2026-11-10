@@ -6,7 +6,8 @@
 //! higher rate, it may want its stride back. `forget` keeps every phasor
 //! and scales every accumulator by a share — 0 is a fresh stride, 1 is no
 //! change — so the next steps are as large as a learner that had seen only
-//! that share of its history.
+//! that share of its history. `Config::stride` does the same by itself,
+//! a little with every line told (phiano docs/231, 232).
 
 use super::Learner;
 

@@ -1,5 +1,6 @@
 //! One prediction and its correction: the gradient, by hand.
 
+use super::plane;
 use super::scratch::{put, times_conj, Scratch, Table};
 use super::Learner;
 
@@ -116,6 +117,7 @@ impl Learner {
         }
         // Now every move. The answers first: `g_j · z`, masked as read.
         let rate = self.config.rate;
+        let (now, decay) = (self.told.len() as u32, self.config.decay());
         for j in 0..s.cand.len() {
             let (v, g) = (s.cand[j], s.logit[j]);
             for k in 0..d {
@@ -123,11 +125,11 @@ impl Learner {
                 s.ti[k] = g * zi[k];
             }
             match self.config.tie {
-                true => self.reach.learn(v, &s.tr, &s.ti, rate, true),
-                false => self.reached.learn(v, &s.tr, &s.ti, rate, true),
+                true => self.reach.learn(v, &s.tr, &s.ti, rate, true, now, decay),
+                false => self.reached.learn(v, &s.tr, &s.ti, rate, true, now, decay),
             }
             let a = &mut self.bias_acc[v as usize];
-            *a += g * g;
+            *a = plane::decayed(*a, &mut self.bias_last[v as usize], now, decay) + g * g;
             self.bias[v as usize] -= rate * g / (*a + 1e-8).sqrt();
         }
         // The operator, a block's worth of channels at a time slower, so a
@@ -135,15 +137,15 @@ impl Learner {
         let op_rate = rate / b as f32;
         for row in 0..ctx.len() * d {
             let at = row * b;
-            self.op.learn(row as u32, &s.op_r[at..at + b], &s.op_i[at..at + b], op_rate, false);
+            self.op.learn(row as u32, &s.op_r[at..at + b], &s.op_i[at..at + b], op_rate, false, now, decay);
         }
         if paired {
-            self.pair.learn(0, &s.pair_r, &s.pair_i, rate, false);
+            self.pair.learn(0, &s.pair_r, &s.pair_i, rate, false, now, decay);
         }
         for (t, row, re, im) in std::mem::take(&mut s.grad) {
             match t {
-                Table::Reach => self.reach.learn(row, &re, &im, rate, true),
-                Table::Cond => self.cond.learn(row, &re, &im, rate, true),
+                Table::Reach => self.reach.learn(row, &re, &im, rate, true, now, decay),
+                Table::Cond => self.cond.learn(row, &re, &im, rate, true, now, decay),
             }
         }
         (s.gr, s.gi, s.zr, s.zi) = (gr, gi, zr, zi);

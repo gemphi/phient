@@ -49,8 +49,11 @@ mod reader;
 mod scratch;
 mod step;
 mod store;
+mod store_v1;
 mod train;
 mod widen;
+#[cfg(test)]
+mod stride_tests;
 #[cfg(test)]
 mod tests;
 
@@ -85,6 +88,8 @@ pub struct Learner {
     pair: Plane,
     bias: Vec<f32>,
     bias_acc: Vec<f32>,
+    /// Lines told when each bias was last touched (`Config::stride`).
+    bias_last: Vec<u32>,
     told: Vec<Vec<u32>>,
     sampler: Vec<u32>,
     /// ln q(v) of the draw, per word, for the correction.
@@ -121,6 +126,7 @@ impl Learner {
             pair: Plane::new(d),
             bias: Vec::new(),
             bias_acc: Vec::new(),
+            bias_last: Vec::new(),
             told: Vec::new(),
             sampler: Vec::new(),
             logq: Vec::new(),
@@ -171,6 +177,7 @@ impl Learner {
         self.cond.push(a[2 * d..].iter().copied(), 1.0);
         self.bias.push(0.0);
         self.bias_acc.push(0.0);
+        self.bias_last.push(0);
         self.seen.push(0);
         self.word.push(w.to_string());
         self.index.insert(w.to_string(), i);
