@@ -95,7 +95,7 @@ graph TB
 - [code](../../docs/phient/code.md)
 - [eval](../../docs/phient/eval.md)
 - generate: [generate](../../docs/phient/generate.md) · [learn](../../docs/phient/learn.md) · [compose](../../docs/phient/compose.md)
-- [lineup](../../docs/phient/lineup.md)
+- [lineup](../../docs/phient/lineup.md) · the learner's training session, to build: [session](../../docs/phient/session.md) · [plan](../../docs/phient/plan.md) · [specs](../../docs/phient/specs.md)
 - [memory](../../docs/phient/memory.md)
 - [metrics](../../docs/phient/metrics.md) · [nonlinear](../../docs/phient/nonlinear.md) · [data](../../docs/phient/data.md)
 - [net](../../docs/phient/net.md)
