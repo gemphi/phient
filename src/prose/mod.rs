@@ -44,19 +44,8 @@ pub fn read_tree(root: &std::path::Path) -> Vec<(String, Vec<Row>)> {
 /// without all its rows in memory at once.
 pub fn for_each_paragraph(root: &std::path::Path, f: &mut dyn FnMut(String, Vec<Row>)) {
     let base = root.parent().unwrap_or(root);
-    walk(base, root, f);
-}
-
-fn walk(base: &std::path::Path, dir: &std::path::Path, out: &mut dyn FnMut(String, Vec<Row>)) {
-    let Ok(entries) = std::fs::read_dir(dir) else { return };
-    let mut paths: Vec<_> = entries.filter_map(|e| e.ok().map(|e| e.path())).collect();
-    paths.sort();
-    for p in &paths {
-        match (p.is_dir(), p.extension().is_some_and(|x| x == "txt")) {
-            (true, _) => walk(base, p, out),
-            (_, true) => one_text(base, p, out),
-            _ => {}
-        }
+    for p in phistd::tree::under(root, "txt") {
+        one_text(base, &p, f);
     }
 }
 

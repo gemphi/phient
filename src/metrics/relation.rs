@@ -21,8 +21,6 @@
 mod benchmark;
 #[cfg(test)]
 mod tests;
-#[allow(unused_imports)]
-use benchmark::*;
 
 use phiecs::phasor::facet::Facet;
 use rayon::prelude::*;

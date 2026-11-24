@@ -17,25 +17,38 @@ pub fn next_prompt(so_far: &str) -> String {
     format!("Here is a story so far:\n\n{so_far}\n\nWrite the next paragraph of this story, three to five sentences, going on from exactly where it stops. Reply with the paragraph only.")
 }
 
+/// The story's chapter files, in order: the `.txt` files `story_dir`
+/// holds. Both the chapter to write to and the story so far are read from
+/// this one listing.
+fn chapter(story_dir: &Path) -> Vec<std::path::PathBuf> {
+    let mut out: Vec<_> = std::fs::read_dir(story_dir)
+        .map(|d| {
+            d.filter_map(|e| e.ok().map(|e| e.path()))
+                .filter(|p| p.extension().is_some_and(|x| x == "txt"))
+                .collect()
+        })
+        .unwrap_or_default();
+    out.sort();
+    out
+}
+
 /// The chapter file the next paragraph goes to: `ch<N>.txt` under
 /// `story/`, a new chapter every `per_chapter` paragraphs.
 pub fn chapter_file(story_dir: &Path, per_chapter: usize) -> std::path::PathBuf {
-    let mut chapters: Vec<_> = std::fs::read_dir(story_dir).map(|d| d.filter_map(|e| e.ok().map(|e| e.path())).filter(|p| p.extension().is_some_and(|x| x == "txt")).collect()).unwrap_or_default();
-    chapters.sort();
-    if let Some(last) = chapters.last() {
+    let chapter = chapter(story_dir);
+    if let Some(last) = chapter.last() {
         let paragraphs = std::fs::read_to_string(last).map_or(0, |t| t.split("\n\n").filter(|p| !p.trim().is_empty()).count());
         if paragraphs < per_chapter {
             return last.clone();
         }
     }
-    story_dir.join(format!("ch{}.txt", chapters.len() + 1))
+    story_dir.join(format!("ch{}.txt", chapter.len() + 1))
 }
 
 /// The whole story so far, chapters in order, paragraphs joined.
 pub fn so_far(story_dir: &Path) -> String {
-    let mut chapters: Vec<_> = std::fs::read_dir(story_dir).map(|d| d.filter_map(|e| e.ok().map(|e| e.path())).filter(|p| p.extension().is_some_and(|x| x == "txt")).collect()).unwrap_or_default();
-    chapters.sort();
-    chapters.iter().filter_map(|p| std::fs::read_to_string(p).ok()).map(|t| t.trim().to_string()).collect::<Vec<_>>().join("\n\n")
+    chapter(story_dir)
+        .iter().filter_map(|p| std::fs::read_to_string(p).ok()).map(|t| t.trim().to_string()).collect::<Vec<_>>().join("\n\n")
 }
 
 /// Agreement between the student's going-on and the teacher's paragraph:

@@ -17,10 +17,7 @@ impl Prior {
     /// Every `.txt` under `dir`, tokenised as the story is (`prose::tokens`).
     pub fn read(dir: &Path) -> Self {
         let mut p = Prior::default();
-        let mut files = Vec::new();
-        collect(dir, &mut files);
-        files.sort();
-        for f in files {
+        for f in phistd::tree::under(dir, "txt") {
             if let Ok(text) = std::fs::read_to_string(&f) {
                 p.add(&text);
             }
@@ -42,18 +39,6 @@ impl Prior {
     pub fn p(&self, w: &str) -> f64 {
         let c = self.counts.get(w).copied().unwrap_or(0) as f64;
         (c + 1.0) / (self.total as f64 + self.counts.len() as f64 + 1.0)
-    }
-}
-
-fn collect(dir: &Path, out: &mut Vec<std::path::PathBuf>) {
-    let Ok(entries) = std::fs::read_dir(dir) else { return };
-    for e in entries.flatten() {
-        let p = e.path();
-        match (p.is_dir(), p.extension().is_some_and(|x| x == "txt")) {
-            (true, _) => collect(&p, out),
-            (_, true) => out.push(p),
-            _ => {}
-        }
     }
 }
 

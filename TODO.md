@@ -36,9 +36,12 @@ Paths are under `src/`. Diagrams: [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ## Tests and duplication
 
-- [ ] prose: teach.rs, telling.rs, going.rs and unknown.rs have no tests; `chapter_file` and `so_far` repeat the chapter listing (prose/teach.rs:23, :36).
+- [x] The directory walk was written four times - `code::files::read_dir`, `code::files::read_files_from`, `code::bcpl::walk`, `prose::walk` and `prose::strand::prior::collect` - and each copy read the files it walked for. One owner, `phistd::tree::under(dir, ext)` (2026-11-24), and each caller does its own one thing: `files::parse` reads one `.rs` file, `files::one_file` makes one file's rows, `prose::one_text` makes one text file's paragraphs.
+- [x] prose: `chapter_file` and `so_far` repeated the chapter listing (prose/teach.rs:23, :36) - `teach::chapter` lists them once and both read it (2026-11-24).
+- [ ] prose: teach.rs, telling.rs, going.rs and unknown.rs have no tests.
+- [ ] metrics: the trigram perplexity loop (tokenise, `windows(3)`, sum `ln p`, `phistd::prob::perplexity`) is written out in `baseline::perplexity`, `harness::lm::affine::perplexity_two_word` and `harness::lm::gamma::gamma_sweep`; the sentences-under-three-words guard is dead in all three, since `windows(3)` yields nothing. One sum with the probability as a closure would say it once - the measures differ only in what they sum.
 - [ ] code: `read_dir` and `read_files_from` repeat the same directory walk (code/files.rs:9, :33).
-- [ ] operator: a dead glob import `#[allow(unused_imports)] use crate::relate::*;` (operator/model.rs:1).
+- [x] operator: a dead glob import `#[allow(unused_imports)] use crate::relate::*;` (operator/model.rs:1), and the same in `metrics/forgetting.rs` and `metrics/relation.rs`; all three gone (2026-11-24).
 
 ## Stale docs
 

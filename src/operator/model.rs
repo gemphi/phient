@@ -1,5 +1,3 @@
-#[allow(unused_imports)]
-use crate::relate::*;
 
 use phiecs::Row;
 use phical::relate::Triple;

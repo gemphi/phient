@@ -93,21 +93,8 @@ pub fn read_bodies(root: &Path) -> Vec<String> {
 /// Every function of every `.b` file under `root`: `(path, name, body)`,
 /// paths `bcpl/<file stem>/<function>`, files in sorted order.
 fn walk(root: &Path) -> Vec<(String, String, String)> {
-    let mut files = Vec::new();
-    let mut stack = vec![root.to_path_buf()];
-    while let Some(d) = stack.pop() {
-        let Ok(rd) = std::fs::read_dir(&d) else { continue };
-        for p in rd.filter_map(|e| e.ok().map(|e| e.path())) {
-            match (p.is_dir(), p.extension().is_some_and(|x| x == "b")) {
-                (true, _) => stack.push(p),
-                (_, true) => files.push(p),
-                _ => {}
-            }
-        }
-    }
-    files.sort();
     let mut out = Vec::new();
-    for p in files {
+    for p in phistd::tree::under(root, "b") {
         let Ok(text) = std::fs::read_to_string(&p) else { continue };
         let stem = p.file_stem().unwrap_or_default().to_string_lossy().to_lowercase();
         for (name, body) in functions(&text) {
