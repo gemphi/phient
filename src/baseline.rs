@@ -116,17 +116,11 @@ impl KneserNey {
 
     /// Held-out perplexity: exp(-mean log probability per token).
     pub fn perplexity(&self, held_out: &[Vec<String>]) -> f64 {
-        let mut log_sum = 0.0f64;
-        let mut n = 0usize;
-
-        for sentence in held_out {
-            let Some(toks) = padded(sentence) else { continue };
-            for w in toks.windows(3) {
-                log_sum += self.probability(&w[0], &w[1], &w[2]).ln();
-                n += 1;
-            }
-        }
-
+        let (mut log_sum, mut n) = (0.0f64, 0usize);
+        crate::trigram::each(held_out.iter().filter_map(|s| padded(s)), |a, b, c| {
+            log_sum += self.probability(a, b, c).ln();
+            n += 1;
+        });
         phistd::prob::perplexity(log_sum, n)
     }
 

@@ -67,29 +67,22 @@ impl<'a> PhianoLM<'a> {
         let mut sums = [0.0f64; GAMMA_GRID.len()];
         let mut n = 0usize;
 
-        for sentence in sentences {
-            let toks = Tokenizer::tokenize(sentence);
-            if toks.len() < 3 {
-                continue;
+        crate::trigram::each(sentences.iter().map(|s| Tokenizer::tokenize(s)), |a, b, c| {
+            // A word the model never saw is no position at all, as it was
+            // when this loop said `continue`.
+            let Some(idx) = self.index.get(c).copied() else { return };
+            let (k, coef) = self.affine(a, b, c);
+            let p_uni = self.unigram[idx].max(floor);
+            let p_ph = match self.context_vec(a, b) {
+                Some(ctx) => self.p_phase(&ctx, idx),
+                None => p_uni,
+            };
+            for (gi, g) in GAMMA_GRID.iter().enumerate() {
+                let base = g * p_ph + (1.0 - g) * p_uni;
+                sums[gi] += (k + coef * base).max(1e-12).ln();
             }
-            for w in toks.windows(3) {
-                let idx = match self.index.get(&w[2]) {
-                    Some(i) => *i,
-                    None => continue,
-                };
-                let (k, coef) = self.affine(&w[0], &w[1], &w[2]);
-                let p_uni = self.unigram[idx].max(floor);
-                let p_ph = match self.context_vec(&w[0], &w[1]) {
-                    Some(ctx) => self.p_phase(&ctx, idx),
-                    None => p_uni,
-                };
-                for (gi, g) in GAMMA_GRID.iter().enumerate() {
-                    let base = g * p_ph + (1.0 - g) * p_uni;
-                    sums[gi] += (k + coef * base).max(1e-12).ln();
-                }
-                n += 1;
-            }
-        }
+            n += 1;
+        });
 
         GAMMA_GRID
             .iter()

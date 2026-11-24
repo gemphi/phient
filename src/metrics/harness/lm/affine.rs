@@ -78,18 +78,11 @@ impl<'a> PhianoLM<'a> {
     /// Kept as the comparison point B3 is measured against, and used wherever a
     /// caller genuinely has nothing but three words.
     pub fn perplexity_two_word(&self, sentences: &[String]) -> f64 {
-        let mut log_sum = 0.0f64;
-        let mut n = 0usize;
-        for sentence in sentences {
-            let toks = Tokenizer::tokenize(sentence);
-            if toks.len() < 3 {
-                continue;
-            }
-            for w in toks.windows(3) {
-                log_sum += self.probability(&w[0], &w[1], &w[2]).ln();
-                n += 1;
-            }
-        }
+        let (mut log_sum, mut n) = (0.0f64, 0usize);
+        crate::trigram::each(sentences.iter().map(|s| Tokenizer::tokenize(s)), |a, b, c| {
+            log_sum += self.probability(a, b, c).ln();
+            n += 1;
+        });
         phistd::prob::perplexity(log_sum, n)
     }
 

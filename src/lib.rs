@@ -57,3 +57,4 @@ pub mod relate;
 pub mod scribe;
 pub mod study;
 pub mod train;
+pub mod trigram;
