@@ -42,6 +42,24 @@ impl Plane {
         self.last.resize(self.acc.len(), now);
     }
 
+    /// The rows `keep` says stay, in order, with their accumulators and
+    /// clocks: what a dropped word takes with it (`drop`). An empty plane
+    /// (the tied `reached`) has no rows to keep.
+    pub(super) fn keep_rows(&mut self, keep: &[bool]) {
+        if self.acc.is_empty() {
+            return;
+        }
+        let d = self.d;
+        let (mut re, mut im, mut acc, mut last) = (Vec::new(), Vec::new(), Vec::new(), Vec::new());
+        for (i, _) in keep.iter().enumerate().filter(|(_, k)| **k) {
+            re.extend_from_slice(&self.re[i * d..(i + 1) * d]);
+            im.extend_from_slice(&self.im[i * d..(i + 1) * d]);
+            acc.push(self.acc[i]);
+            last.push(self.last[i]);
+        }
+        (self.re, self.im, self.acc, self.last) = (re, im, acc, last);
+    }
+
     pub(super) fn row(&self, i: u32) -> (&[f32], &[f32]) {
         let s = i as usize * self.d;
         (&self.re[s..s + self.d], &self.im[s..s + self.d])

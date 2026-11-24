@@ -42,6 +42,7 @@
 
 mod condition;
 mod config;
+mod drop;
 mod forget;
 mod plane;
 mod read;
@@ -52,6 +53,8 @@ mod store;
 mod store_v1;
 mod train;
 mod widen;
+#[cfg(test)]
+mod drop_tests;
 #[cfg(test)]
 mod stride_tests;
 #[cfg(test)]
