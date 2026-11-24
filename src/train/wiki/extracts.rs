@@ -96,7 +96,7 @@ pub async fn fetch_curriculum_extracts(max_topics: Option<usize>) -> (Vec<(Strin
 pub fn train_extracts(facet: &mut Facet, trainer: &Trainer, extracts: &[(String, String)]) -> usize {
     let mut total_tokens = 0;
     for (_title, extract) in extracts {
-        let truncated = if extract.len() > 5000 { &extract[..5000] } else { extract.as_str() };
+        let truncated = cut(extract);
         for sentence in Tokenizer::split_sentences(truncated) {
             if Tokenizer::tokenize(&sentence).len() >= 4 {
                 total_tokens += trainer.train_sentence(facet, &sentence);
@@ -142,11 +142,7 @@ pub async fn bulk_ingest(
 
         match Self::fetch_wiki_extract(&client, topic).await {
             Ok((_title, extract)) => {
-                let truncated = if extract.len() > 5000 {
-                    &extract[..5000]
-                } else {
-                    &extract
-                };
+                let truncated = cut(&extract);
                 let mut tokens = 0;
                 for sentence in Tokenizer::split_sentences(truncated) {
                     if Tokenizer::tokenize(&sentence).len() >= 4 {
@@ -178,4 +174,35 @@ pub async fn bulk_ingest(
         errors,
     }
 }
+}
+
+/// The most of one extract a facet is told; the rest of it is left unread.
+const MOST: usize = 5000;
+
+/// At most [`MOST`] bytes of an extract, cut where a character ends. The
+/// byte index alone panics inside a multi-byte character, and a Wikipedia
+/// extract is as likely as any text to hold one at the cut.
+fn cut(extract: &str) -> &str {
+    match extract.len() > MOST {
+        true => &extract[..(0..=MOST).rev().find(|i| extract.is_char_boundary(*i)).unwrap_or(0)],
+        false => extract,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{cut, MOST};
+
+    /// The character the byte index would halve, and the two edges beside it.
+    #[test]
+    fn the_cut_falls_where_a_character_ends() {
+        let halved = "a".repeat(MOST - 1) + "\u{e9}" + &"b".repeat(100);
+        assert_eq!(cut(&halved).len(), MOST - 1, "cut before the character the byte index halves");
+        assert!(halved.starts_with(cut(&halved)));
+
+        let whole = "a".repeat(MOST) + "\u{e9}";
+        assert_eq!(cut(&whole).len(), MOST, "a boundary at the cut is the cut");
+
+        assert_eq!(cut("a short extract"), "a short extract", "nothing is cut off a short one");
+    }
 }

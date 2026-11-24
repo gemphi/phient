@@ -58,12 +58,12 @@ impl Cut {
         let m = (1..n).filter(|j| self.marks[sp.start + j - 1]).count();
         let cost = |j: usize| {
             2.0 * ln2
-                + if m == 0 || m == k {
-                    (k as f64).ln()
-                } else if self.marks[sp.start + j - 1] {
-                    ln2 + (m as f64).ln()
-                } else {
-                    ln2 + ((k - m) as f64).ln()
+                + match m {
+                    // Every mark or none: the division is told by its place
+                    // alone, and the marks cost nothing to say.
+                    _ if m == 0 || m == k => (k as f64).ln(),
+                    _ if self.marks[sp.start + j - 1] => ln2 + (m as f64).ln(),
+                    _ => ln2 + ((k - m) as f64).ln(),
                 }
         };
         (1..n)

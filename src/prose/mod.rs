@@ -52,18 +52,23 @@ fn walk(base: &std::path::Path, dir: &std::path::Path, out: &mut dyn FnMut(Strin
     let mut paths: Vec<_> = entries.filter_map(|e| e.ok().map(|e| e.path())).collect();
     paths.sort();
     for p in &paths {
-        if p.is_dir() {
-            walk(base, p, out);
-        } else if p.extension().is_some_and(|x| x == "txt") {
-            let Ok(text) = std::fs::read_to_string(p) else { continue };
-            let file = p.with_extension("");
-            let rel = file.strip_prefix(base).unwrap_or(&file).to_string_lossy().replace('\\', "/");
-            let paragraphs: Vec<String> = text.split("\n\n").map(|x| x.split_whitespace().collect::<Vec<_>>().join(" ")).filter(|x| !x.is_empty()).collect();
-            for (i, para) in paragraphs.iter().enumerate() {
-                let path = format!("{rel}/p{}", i + 1);
-                out(path.clone(), paragraph(&path, std::slice::from_ref(para)));
-            }
+        match (p.is_dir(), p.extension().is_some_and(|x| x == "txt")) {
+            (true, _) => walk(base, p, out),
+            (_, true) => one_text(base, p, out),
+            _ => {}
         }
+    }
+}
+
+/// One text file's paragraphs, each a path of its own under the file's.
+fn one_text(base: &std::path::Path, p: &std::path::Path, out: &mut dyn FnMut(String, Vec<Row>)) {
+    let Ok(text) = std::fs::read_to_string(p) else { return };
+    let file = p.with_extension("");
+    let rel = file.strip_prefix(base).unwrap_or(&file).to_string_lossy().replace('\\', "/");
+    let said: Vec<String> = text.split("\n\n").map(|x| x.split_whitespace().collect::<Vec<_>>().join(" ")).filter(|x| !x.is_empty()).collect();
+    for (i, para) in said.iter().enumerate() {
+        let path = format!("{rel}/p{}", i + 1);
+        out(path.clone(), paragraph(&path, std::slice::from_ref(para)));
     }
 }
 

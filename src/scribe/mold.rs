@@ -26,18 +26,16 @@ pub enum Slot {
 fn of(tok: &[String]) -> Vec<Slot> {
     let mut class: std::collections::HashMap<&str, usize> = Default::default();
     tok.iter()
-        .map(|t| {
-            if t.parse::<i64>().is_ok() {
-                Slot::Figure
-            } else if t != "start"
+        .map(|t| match t {
+            _ if t.parse::<i64>().is_ok() => Slot::Figure,
+            _ if t != "start"
                 && t.chars().next().is_some_and(|c| c.is_alphabetic())
-                && !phiclm::token::KEYWORDS.contains(&t.as_str())
+                && !phiclm::token::KEYWORDS.contains(&t.as_str()) =>
             {
                 let n = class.len();
                 Slot::Hole(*class.entry(t).or_insert(n))
-            } else {
-                Slot::Fixed(t.to_string())
             }
+            _ => Slot::Fixed(t.to_string()),
         })
         .collect()
 }

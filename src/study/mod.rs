@@ -87,6 +87,16 @@ impl Study {
         s
     }
 
+    /// The verdict in one word, for a table cell; [`Self::verdict`] says
+    /// the same reading as a sentence.
+    pub fn word(&self) -> &'static str {
+        match (self.beats_floor(), self.rises()) {
+            (true, true) => "learning",
+            (true, false) => "saturated",
+            (false, _) => "not learning",
+        }
+    }
+
     pub fn verdict(&self) -> &'static str {
         match (self.beats_floor(), self.rises()) {
             (true, true) => "MET: learns from examples and improves as it reads.",

@@ -35,15 +35,17 @@ impl ApiSource {
         }
 
         // 3. -s / -es / -ies plurals (e.g. coins -> coin, monies -> money, watches -> watch)
-        if w.ends_with("ies") && w.len() > 4 {
-            let base = format!("{}y", &w[..w.len() - 3]);
-            candidates.push((base, "Plural form of"));
-        } else if w.ends_with("es") && w.len() > 3 {
-            let base = &w[..w.len() - 2];
-            candidates.push((base.to_string(), "Plural / 3rd person singular of"));
-        } else if w.ends_with('s') && w.len() > 2 && !w.ends_with("ss") {
-            let base = &w[..w.len() - 1];
-            candidates.push((base.to_string(), "Plural form of"));
+        match w {
+            _ if w.ends_with("ies") && w.len() > 4 => {
+                candidates.push((format!("{}y", &w[..w.len() - 3]), "Plural form of"))
+            }
+            _ if w.ends_with("es") && w.len() > 3 => {
+                candidates.push((w[..w.len() - 2].to_string(), "Plural / 3rd person singular of"))
+            }
+            _ if w.ends_with('s') && w.len() > 2 && !w.ends_with("ss") => {
+                candidates.push((w[..w.len() - 1].to_string(), "Plural form of"))
+            }
+            _ => {}
         }
 
         // 4. -ly adverbs (e.g. warmly -> warm)

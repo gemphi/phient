@@ -35,27 +35,24 @@ impl SynthesisHeuristic {
             let input_tokens = Tokenizer::tokenize(input);
             let output_tokens = Tokenizer::tokenize(output);
 
-            if input_tokens.len() == output_tokens.len() {
-                let reversed: Vec<String> = input_tokens.iter().rev().cloned().collect();
-                if reversed == output_tokens {
-                    suggestions.push("reverse");
-                } else {
+            suggestions.push(match input_tokens.len().cmp(&output_tokens.len()) {
+                std::cmp::Ordering::Equal => {
+                    let reversed: Vec<String> = input_tokens.iter().rev().cloned().collect();
                     let sorted: Vec<String> = {
                         let mut t = input_tokens.clone();
                         t.sort();
                         t
                     };
-                    if sorted == output_tokens {
-                        suggestions.push("sort");
-                    } else {
-                        suggestions.push("map");
+                    match (reversed == output_tokens, sorted == output_tokens) {
+                        (true, _) => "reverse",
+                        (_, true) => "sort",
+                        _ => "map",
                     }
                 }
-            } else if output_tokens.len() < input_tokens.len() {
-                suggestions.push("filter");
-            } else {
-                suggestions.push("compose");
-            }
+                // Fewer words out than in, or more.
+                std::cmp::Ordering::Greater => "filter",
+                std::cmp::Ordering::Less => "compose",
+            });
         }
 
         suggestions

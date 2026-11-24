@@ -114,15 +114,11 @@ impl Generator {
     /// The goal bonus for a candidate, zero once the goal has been emitted.
     pub(super) fn goal_bonus(&self, facet: &Facet, word: &str) -> f64 {
         match &self.goal {
-            Some((g, w)) if *w != 0.0 => {
-                if self.ctx.borrow().iter().any(|t| t == g) {
-                    0.0
-                } else if word == g {
-                    *w
-                } else {
-                    w * facet.calls_for_with(word, g, self.reading)
-                }
-            }
+            Some((g, w)) if *w != 0.0 => match word {
+                _ if self.ctx.borrow().iter().any(|t| t == g) => 0.0,
+                _ if word == g => *w,
+                _ => w * facet.calls_for_with(word, g, self.reading),
+            },
             _ => 0.0,
         }
     }

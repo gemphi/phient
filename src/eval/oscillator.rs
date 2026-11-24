@@ -103,12 +103,10 @@ impl fmt::Display for ComparisonResult {
         writeln!(f, "  └─────────────────────┴──────────┴──────────┘")?;
         writeln!(f)?;
         writeln!(f, "  agreement: {:.1}%", self.agreement * 100.0)?;
-        if self.agreement > 0.8 {
-            writeln!(f, "  → models agree - high confidence assessment")?;
-        } else if self.agreement > 0.5 {
-            writeln!(f, "  → models partially agree - moderate confidence")?;
-        } else {
-            writeln!(f, "  → models disagree - text sits at a model boundary")?;
+        match self.agreement {
+            a if a > 0.8 => writeln!(f, "  → models agree - high confidence assessment")?,
+            a if a > 0.5 => writeln!(f, "  → models partially agree - moderate confidence")?,
+            _ => writeln!(f, "  → models disagree - text sits at a model boundary")?,
         }
         Ok(())
     }

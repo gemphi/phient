@@ -22,14 +22,17 @@ Paths are under `src/`. Diagrams: [ARCHITECTURE.md](ARCHITECTURE.md).
 - [ ] code: in `bcpl::learn` the `"$("` and `"$)"` arms can never match, because `prose::tokens` splits `$(` into `$` and `(`; depth moves only on `(` and `)` (code/bcpl/learn.rs:34, :76).
 - [ ] operator: `MirrorWave::filter` caches `cols` from the first `values` and reuses them for later ones; `FnoWave::back` does the same with `backs` (operator/mirror.rs:22, operator/wave.rs:81).
 - [ ] prose: the family test `assert!(k.unsure(2).is_empty() || !k.unsure(2).is_empty())` is always true, so `unsure` is untested (prose/family.rs:76).
+- [x] wiki: `&extract[..5000]` panicked inside a multi-byte character (train/wiki/extracts.rs, both sites; phiano's TODO carried the row from before the move). `cut` takes at most `MOST` bytes, back to where a character ends; one test, the halved character and the two edges beside it (2026-11-24).
+- [x] lineup: `use phiecs::agent::Agent;` stood inside `Ecs::angle` and `Ecs::profile` as well as in the module's own use list; the two copies went (2026-11-24).
 
 ## The match-not-else-if rule
 
-- [ ] scribe: `mold::of` is an if / else-if chain (scribe/mold.rs:30-38).
-- [ ] code: `role::of` is an if / else-if chain (code/bcpl/role.rs:14-24).
-- [ ] prose: the cost in `best_division` is an if / else-if chain (prose/strand/code.rs:63).
-- [ ] relate: `Table::add` is an if-let / else-if chain (relate/table.rs:33-37).
-- [ ] study: the verdict in `Arena::table` is an if / else-if chain with its own strings, beside `Study::verdict` (study/arena.rs:94).
+- [x] Not one else-if chain is left in phient (2026-11-24): the five rows below and the seven the audit had missed - `code/bcpl/mod.rs` and `code/files.rs` (the walks), `eval/oscillator.rs`, `eval/verdict.rs` (the row phiano's TODO carried from before the move), `generate/generator.rs`, `prose/mod.rs`, `prose/strand/prior.rs`, `train/synthetic.rs`, `train/synthesis/heuristic.rs` (one `Ordering` match in place of three chains) and `train/sources/api/source.rs`. Two walks read one file each in a function of their own now (`code::files::one_file`, `prose::one_text`), which is what made the chain long.
+- [x] scribe: `mold::of` is an if / else-if chain (scribe/mold.rs:30-38).
+- [x] code: `role::of` is an if / else-if chain (code/bcpl/role.rs:14-24).
+- [x] prose: the cost in `best_division` is an if / else-if chain (prose/strand/code.rs:63).
+- [x] relate: `Table::add` is an if-let / else-if chain (relate/table.rs:33-37) - now a position, then the match, so the row's borrow ends before the arms.
+- [x] study: the verdict in `Arena::table` is an if / else-if chain with its own strings, beside `Study::verdict` (study/arena.rs:94) - `Study::word` says the verdict in one word beside the sentence, and the table calls it.
 
 ## Tests and duplication
 

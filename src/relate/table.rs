@@ -29,17 +29,18 @@ impl Table {
 
     pub fn add(&mut self, w: Word, by: f64) {
         match self {
-            Table::Few(v) => {
-                if let Some(e) = v.iter_mut().find(|(x, _)| *x == w) {
-                    e.1 += by;
-                } else if v.len() < FEW {
-                    v.push((w, by));
-                } else {
-                    let mut m: HashMap<Word, f64> = v.drain(..).collect();
-                    m.insert(w, by);
-                    *self = Table::Many(m);
-                }
-            }
+            Table::Few(v) => match v.iter().position(|(x, _)| *x == w) {
+                Some(i) => v[i].1 += by,
+                None => match v.len() < FEW {
+                    true => v.push((w, by)),
+                    // Past FEW the row is a map from here on.
+                    false => {
+                        let mut m: HashMap<Word, f64> = v.drain(..).collect();
+                        m.insert(w, by);
+                        *self = Table::Many(m);
+                    }
+                },
+            },
             Table::Many(m) => *m.entry(w).or_default() += by,
         }
     }

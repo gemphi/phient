@@ -98,10 +98,10 @@ fn walk(root: &Path) -> Vec<(String, String, String)> {
     while let Some(d) = stack.pop() {
         let Ok(rd) = std::fs::read_dir(&d) else { continue };
         for p in rd.filter_map(|e| e.ok().map(|e| e.path())) {
-            if p.is_dir() {
-                stack.push(p);
-            } else if p.extension().is_some_and(|x| x == "b") {
-                files.push(p);
+            match (p.is_dir(), p.extension().is_some_and(|x| x == "b")) {
+                (true, _) => stack.push(p),
+                (_, true) => files.push(p),
+                _ => {}
             }
         }
     }

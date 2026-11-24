@@ -11,18 +11,13 @@ pub use phiclm::token::KEYWORDS;
 /// guessing the next role is 1-in-6 (~17%).
 pub fn of(t: &str) -> &'static str {
     let c = t.chars().next().unwrap_or(' ');
-    if KEYWORDS.contains(&t) {
-        "keyword"
-    } else if c.is_ascii_digit() {
-        "number"
-    } else if t == "\"" || t == "'" {
-        "string"
-    } else if c.is_alphabetic() || c == '_' {
-        "name"
-    } else if "()[]{}$".contains(c) {
-        "bracket"
-    } else {
-        "operator"
+    match t {
+        _ if KEYWORDS.contains(&t) => "keyword",
+        _ if c.is_ascii_digit() => "number",
+        "\"" | "'" => "string",
+        _ if c.is_alphabetic() || c == '_' => "name",
+        _ if "()[]{}$".contains(c) => "bracket",
+        _ => "operator",
     }
 }
 

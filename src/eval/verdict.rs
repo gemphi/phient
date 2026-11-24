@@ -88,15 +88,15 @@ impl Evaluator {
         let wave = Wave::sentence(facet, &tokens);
         let centroid = facet.centroid();
 
-        let coherence = if known == 0 {
-            0.0
-        } else if known == 1 {
-            // Single word: measure alignment with facet centroid direction
-            let alignment = (centroid.arg() - wave.arg()).cos().max(0.0);
-            alignment * 0.5 + 0.25
-        } else {
-            // Multiple words: Kuramoto order parameter
-            (wave.norm() / known as f64).clamp(0.0, 1.0)
+        let coherence = match known {
+            0 => 0.0,
+            // One word: how it lies against the facet's centroid.
+            1 => {
+                let alignment = (centroid.arg() - wave.arg()).cos().max(0.0);
+                alignment * 0.5 + 0.25
+            }
+            // More: the Kuramoto order parameter.
+            _ => (wave.norm() / known as f64).clamp(0.0, 1.0),
         };
 
         // Novelty is the *direction* of the sentence wave relative to the

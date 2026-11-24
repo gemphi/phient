@@ -91,7 +91,7 @@ impl Arena {
                 c.first().copied().unwrap_or(0.0),
                 c.last().copied().unwrap_or(0.0),
                 st.lift(),
-                if st.beats_floor() && st.rises() { "learning" } else if st.beats_floor() { "saturated" } else { "not learning" }
+                st.word()
             ));
         }
         s

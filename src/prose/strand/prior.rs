@@ -49,10 +49,10 @@ fn collect(dir: &Path, out: &mut Vec<std::path::PathBuf>) {
     let Ok(entries) = std::fs::read_dir(dir) else { return };
     for e in entries.flatten() {
         let p = e.path();
-        if p.is_dir() {
-            collect(&p, out);
-        } else if p.extension().is_some_and(|x| x == "txt") {
-            out.push(p);
+        match (p.is_dir(), p.extension().is_some_and(|x| x == "txt")) {
+            (true, _) => collect(&p, out),
+            (_, true) => out.push(p),
+            _ => {}
         }
     }
 }

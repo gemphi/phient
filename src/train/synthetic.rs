@@ -56,18 +56,13 @@ impl SyntheticGenerator {
                 let w2 = &words[j];
                 if let (Some(p1), Some(p2)) = (facet.lexicon.get(w1), facet.lexicon.get(w2)) {
                     let diff = phical::circle::distance(p1.phase, p2.phase);
-                    if diff < 0.5 {
-                        pairs.push(ContrastPair {
-                            term_a: w1.clone(),
-                            term_b: w2.clone(),
-                            relationship: "synonym",
-                        });
-                    } else if diff > 2.5 {
-                        pairs.push(ContrastPair {
-                            term_a: w1.clone(),
-                            term_b: w2.clone(),
-                            relationship: "contrast",
-                        });
+                    let relationship = match diff {
+                        d if d < 0.5 => Some("synonym"),
+                        d if d > 2.5 => Some("contrast"),
+                        _ => None,
+                    };
+                    if let Some(relationship) = relationship {
+                        pairs.push(ContrastPair { term_a: w1.clone(), term_b: w2.clone(), relationship });
                     }
                 }
             }
