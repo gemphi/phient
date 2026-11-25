@@ -1,7 +1,6 @@
 use crate::train::sources::DictionarySource;
 use serde::Deserialize;
 use std::collections::HashMap;
-use std::fs;
 
 /// A flat JSON dictionary source.
 ///
@@ -25,13 +24,7 @@ struct FlatDictionary(HashMap<String, String>);
 
 impl DictionarySource for JsonDictionarySource {
     fn fetch_all(&self) -> Vec<(String, String)> {
-        let content = match fs::read_to_string(&self.file_path) {
-            Ok(c) => c,
-            Err(e) => {
-                eprintln!("[error] Could not read '{}': {}", self.file_path, e);
-                return vec![];
-            }
-        };
+        let Some(content) = super::text(&self.file_path) else { return vec![] };
 
         match serde_json::from_str::<FlatDictionary>(&content) {
             Ok(dict) => {

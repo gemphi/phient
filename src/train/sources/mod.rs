@@ -13,6 +13,20 @@ pub mod local;
 pub mod phi4;
 pub mod wiktionary;
 
+/// A source file's text, or nothing and a line saying why not. Three
+/// readers - the JSON dictionary and the Wiktionary dump, twice - said this
+/// the same way, and a source that cannot be read yields no entries rather
+/// than stopping the run.
+pub(super) fn text(path: &str) -> Option<String> {
+    match std::fs::read_to_string(path) {
+        Ok(text) => Some(text),
+        Err(e) => {
+            eprintln!("[error] Could not read '{path}': {e}");
+            None
+        }
+    }
+}
+
 /// DictionarySource - a source of word definitions for bootstrapping the facet.
 ///
 /// Implementations include local files, JSON dictionaries, API sources,

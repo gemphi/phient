@@ -25,13 +25,7 @@ impl WiktionarySource {
     /// antonyms, from both the entry level and each sense. Kaikki JSONL only;
     /// the simple `{word: [def]}` format carries no relations and yields none.
     pub fn relations(&self) -> Vec<Relation> {
-        let content = match fs::read_to_string(&self.file_path) {
-            Ok(c) => c,
-            Err(e) => {
-                eprintln!("[error] Could not read '{}': {}", self.file_path, e);
-                return vec![];
-            }
-        };
+        let Some(content) = super::text(&self.file_path) else { return vec![] };
         let mut out = Vec::new();
         for line in content.lines().map(str::trim).filter(|l| !l.is_empty()) {
             let Ok(entry) = serde_json::from_str::<KaikkiEntry>(line) else { continue };
@@ -127,13 +121,7 @@ pub struct Relation {
 
 impl DictionarySource for WiktionarySource {
     fn fetch_all(&self) -> Vec<(String, String)> {
-        let content = match fs::read_to_string(&self.file_path) {
-            Ok(c) => c,
-            Err(e) => {
-                eprintln!("[error] Could not read '{}': {}", self.file_path, e);
-                return vec![];
-            }
-        };
+        let Some(content) = super::text(&self.file_path) else { return vec![] };
 
         // Try simple JSON format first
         if let Ok(dump) = serde_json::from_str::<SimpleWiktionaryDump>(&content) {
