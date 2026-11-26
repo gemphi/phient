@@ -44,7 +44,15 @@ struct Stored {
 }
 
 impl Learner {
-    /// Writes the learner to `path`, whole.
+    /// Writes the learner to `path`, whole and atomically.
+    ///
+    /// The bytes go to `<path>.tmp` and are renamed over the checkpoint,
+    /// `rename` being atomic on every mainstream filesystem. A plain write
+    /// of 458 MB that stops halfway - the machine restarting under an
+    /// eleven-hour run, as it did on 2026-11-26 - would leave a truncated
+    /// learner where the one the next run resumes from was, and the
+    /// checkpoints are the curriculum's history. phiecs's facet storage
+    /// learned this first.
     pub fn save(&self, path: impl AsRef<Path>) -> io::Result<()> {
         let stored = Stored {
             version: VERSION,
@@ -63,7 +71,10 @@ impl Learner {
             rng: self.rng,
         };
         let bytes = bincode::serialize(&stored).map_err(io::Error::other)?;
-        std::fs::write(path, bytes)
+        let path = path.as_ref();
+        let tmp = path.with_extension("tmp");
+        std::fs::write(&tmp, bytes)?;
+        std::fs::rename(&tmp, path)
     }
 
     /// Reads a learner back from `path`. It goes on from where it was
