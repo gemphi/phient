@@ -90,3 +90,39 @@ fn test_contrastive_preserves_dispersion() {
         f2.phase_dispersion()
     );
 }
+
+/// What each context construction does with the order of its two words
+/// (`lm/context.rs`), measured on the toy corpus at seed 42.
+///
+/// The rolled construction binds each word to the place it stands in: a
+/// swap gives a context pointing the other way, -0.481. The weighted one
+/// was documented as order-blind - "the two words land in the same
+/// superposition, and swapping them changes only their magnitudes" - and
+/// it is not: it reads 0.453, well under the 1.0 that blindness would
+/// give. The sum is weighted, but each channel is then normalised back to
+/// the unit circle, and that normalisation keeps only a direction, which
+/// the heavier word turns. Order is in there as a by-product.
+///
+/// The two were written out as two copies of one sum before 2026-11-27;
+/// this is what would catch a weight put where a roll belongs.
+#[test]
+fn the_two_context_constructions_hear_order_differently() {
+    let split = Harness::split(toy_corpus(), 42);
+    let (facet, _) = Harness::train_and_measure(&split, &Trainer::new(0.05), 3, true);
+    let lm = PhianoLM::with_gamma(&facet, 1.0);
+
+    let mut pairs = Vec::new();
+    for sentence in &split.valid {
+        let toks = Tokenizer::tokenize(sentence);
+        for w in toks.windows(2) {
+            pairs.push((w[0].clone(), w[1].clone()));
+        }
+    }
+    assert!(pairs.len() > 8, "the toy corpus gives {} pairs", pairs.len());
+
+    let weighed = lm.order_sensitivity(&pairs, ContextKind::TwoWord);
+    let bound = lm.order_sensitivity(&pairs, ContextKind::Bound);
+    assert!((0.3..0.6).contains(&weighed), "the weighted construction read {weighed:.3}, not 0.453");
+    assert!(bound < 0.0, "a rolled context should point the other way after a swap, read {bound:.3}");
+    assert!(bound < weighed - 0.5, "bound {bound:.3} should be far under weighed {weighed:.3}");
+}
