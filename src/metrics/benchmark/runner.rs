@@ -49,7 +49,13 @@ pub struct BenchmarkRunner;
 
 impl BenchmarkRunner {
     /// Runs all benchmarks and returns a comprehensive report.
-    pub fn run_all(facet: &mut Facet, trainer: &Trainer) -> BenchmarkReport {
+    ///
+    /// **A benchmark must not change the model it reports on.** Three of
+    /// these measure by training - adaptation, novelty and ARC - and each
+    /// was handed the live facet, so running the suite moved the numbers
+    /// it was about to print. Each trains a copy now, and the `&Facet`
+    /// here makes that the compiler's business and not the caller's.
+    pub fn run_all(facet: &Facet, trainer: &Trainer) -> BenchmarkReport {
         let prompt = "rust ownership borrowing lifetime";
         let split = BaselineSet::load_split();
 
@@ -61,14 +67,14 @@ impl BenchmarkRunner {
 
         let brittleness = Adversarial::brittleness(facet, prompt);
         let ood = OodDetector::score(facet, prompt);
-        let adaptation = Adaptation::efficiency(facet, trainer, "ownership borrowing", 16);
-        let novel = NoveltyBenchmark::task_score(facet, trainer, "quantum entanglement physics");
+        let adaptation = Adaptation::efficiency(&mut facet.clone(), trainer, "ownership borrowing", 16);
+        let novel = NoveltyBenchmark::task_score(&mut facet.clone(), trainer, "quantum entanglement physics");
 
         let arc_results = {
             let tasks = ArcBenchmark::load_tasks("data/arc_tasks.json");
             match tasks.is_empty() {
                 true => None,
-                false => Some(ArcBenchmark::evaluate(facet, trainer, &tasks)),
+                false => Some(ArcBenchmark::evaluate(&mut facet.clone(), trainer, &tasks)),
             }
         };
 

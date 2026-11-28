@@ -132,7 +132,7 @@ impl ChunkStore {
             metrics.epochs_completed += 1;
             metrics.words_learned = manifold.vocabulary_size();
             let elapsed = epoch_start.elapsed();
-            println!("  [epoch {}/{}] {} words, {:?}", epochs, epoch + 1, manifold.vocabulary_size(), elapsed);
+            println!("  [epoch {}/{}] {} words, {:?}", epoch + 1, epochs, manifold.vocabulary_size(), elapsed);
         }
 
         metrics.total_time = start.elapsed();
